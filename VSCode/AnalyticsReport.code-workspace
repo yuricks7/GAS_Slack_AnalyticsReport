@@ -1,0 +1,24 @@
+{
+	"folders": [
+		{
+			"name": "VSCode",
+			"path": "."
+		},
+		{
+			"name": "ProjectAll",
+			"path": "../"
+		},
+		{
+			"name": "Git",
+			"path": "../.git"
+		},
+		{
+			"name": "src",
+			"path": "../src"
+		},
+	],
+	"settings": {
+		"workbench.colorTheme": "Darcula",
+		"editor.fontSize": 14,
+ }
+}
