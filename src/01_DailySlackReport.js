@@ -1,43 +1,71 @@
 function SendAnalyticsReportToSlack() {
+  try {
+    //Slackにポスト
+    const POST_CHANNEL_NAME   = '50_blog_yuru-wota';
+    const DISPLAYED_USER_NAME = 'アクセス解析レポート';
+    var mySlack = new Slack(POST_CHANNEL_NAME, DISPLAYED_USER_NAME);
+    mySlack.post(generateMessageForSlack());
+
+  } catch (e) {
+    var occuredTime = new Date();
+    var errorLog    = new ErrorLog(e, occuredTime);
+    errorLog.output(ss, 'エラーログ');
+
+  }
+}
+
+/**
+ * Slack投稿用にメッセージを連結する
+ *
+ * @return {string} 作成したメッセージ
+ */
+var generateMessageForSlack = function() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
 
   // レポート
+  var dailyReport = generatePreviousDayReport(ss);
+
+  // 記事別ランキング
+  var dailyRanking = generateDailyRanking(ss);
+
+  // メッセージをまとめる
+  var message = ':male-construction-worker: < おはようございまーす。昨日の成績ですよー' + '\n';
+  message += dailyReport + '\n'
+  message += '\n'
+  message += dailyRanking;
+
+  return message;
+}
+
+/**
+ * 前日のデータからレポートを生成する
+ *
+ * @param {object} 抽出対象のスプレッドシート
+ * @return {string} 前日のレポート
+ * @customfunction
+ */
+var generatePreviousDayReport = function(ss) {
   var dailySheet   = ss.getSheetByName('PV Report');
   var reportValues = dailySheet.getDataRange().getValues();
 
   const YESTERDAY_ROW   = 16; // 16行目が最新
-  var previousDayReport = createAnalyticsReport(reportValues[YESTERDAY_ROW -1]);
+  var previousDayReport = createReportMessage(reportValues[YESTERDAY_ROW -1]);
 
-  // 記事別ランキング
-  var rankingSheet  = ss.getSheetByName('Daily Ranking');
-  var rankingValues = rankingSheet.getDataRange().getValues();
-
-  var dailyRanking = createDailyRanking(rankingValues);
-
-  // メッセージをまとめる
-  var message = ':male-construction-worker: < おはようございまーす。昨日の成績ですよー' + '\n'
-              + previousDayReport + '\n'
-              + '\n'
-              + dailyRanking;
-
-  //Slackにポスト
-  const POST_CHANNEL_NAME   = '50_blog_yuru-wota';
-  const DISPLAYED_USER_NAME = 'アクセス解析レポート';
-  var mySlack = new Slack(POST_CHANNEL_NAME, DISPLAYED_USER_NAME);
-  mySlack.post(message);
+  return previousDayReport;
 }
 
 /**
- * Slack投稿用メッセージのレポート部分を生成する
+ * データからSlack投稿用メッセージに整形する
  *
- * @param {Array} 'PV Report'シートの当日の値（1次元配列）
+ * @param {array} 'PV Report'シートの当日の値（1次元配列）
  *   【Dimensions】ga:pageTitle, ga:pagePath
  *   【Metrics】ga:pageviews, ga:avgTimeOnPage,
  *      ga:newUsers, ga:users, ga:sessions, ga:pageviewsPerSession,
  *      ga:avgSessionDuration, ga:bounceRate
  *   【※Order】-ga:date
+ * @return {string} 整形したメッセージ
  */
-var createAnalyticsReport = function(rowValues) {
+var createReportMessage = function(rowValues) {
   // 読みやすいように値を加工しつつ代入
   var reports = {
     date               : Moment.moment(rowValues[0]).format('YYYY/MM/DD (ddd)'),
@@ -51,19 +79,19 @@ var createAnalyticsReport = function(rowValues) {
     bounceRate         : (rowValues[8] * 100).toFixed(1)
   }
 
-  var report = '*▼' + reports.date + '*' + '\n';
-  report += '```';
-  report += 'Pageviews             : ' + reports.pageviews          + ' views'         + '\n';
-  report += 'Time on Page(Avg.)    : ' + reports.avgTimeOnPage      + ' sec.'          + '\n';
-  report += 'Sessions              : ' + reports.sessions           + ' sessions'      + '\n';
-  report += 'Pageviews/Session     : ' + reports.pagesPerSessions   + ' pages/session' + '\n';
-  report += 'Session Duration(Avg.): ' + reports.avgSessionDuration + ' sec.'          + '\n';
-  report += 'Users                 : ' + reports.newUsers // ※改行しない
+  var reportMsg = '*▼' + reports.date + '*' + '\n';
+  reportMsg += '```';
+  reportMsg += 'Pageviews             : ' + reports.pageviews          + ' views'         + '\n';
+  reportMsg += 'Time on Page(Avg.)    : ' + reports.avgTimeOnPage      + ' sec.'          + '\n';
+  reportMsg += 'Sessions              : ' + reports.sessions           + ' sessions'      + '\n';
+  reportMsg += 'Pageviews/Session     : ' + reports.pagesPerSessions   + ' pages/session' + '\n';
+  reportMsg += 'Session Duration(Avg.): ' + reports.avgSessionDuration + ' sec.'          + '\n';
+  reportMsg += 'Users                 : ' + reports.newUsers // ※改行しない
                               + ' of ' + reports.allUsers           + ' people'        + '\n';
-  report += 'BounceRate            : ' + reports.bounceRate         + ' %'             + '\n';
-  report += '```';
+  reportMsg += 'BounceRate            : ' + reports.bounceRate         + ' %'             + '\n';
+  reportMsg += '```';
 
-  return report;
+  return reportMsg;
 }
 
 /* --------------↓メモ↓-------------- */
@@ -80,7 +108,23 @@ var createAnalyticsReport = function(rowValues) {
 /* --------------↑メモ↑-------------- */
 
 /**
- * Slack投稿用メッセージのランキング部分を生成する
+ * 前日のデータからランキングを生成する
+ *
+ * @param {object} 抽出対象のスプレッドシート
+ * @return {string} 前日のランキング
+ * @customfunction
+ */
+var generateDailyRanking = function(ss) {
+  var rankingSheet  = ss.getSheetByName('Daily Ranking');
+  var rankingValues = rankingSheet.getDataRange().getValues();
+
+  var dailyRanking = joinRankingMessage(rankingValues);
+
+  return dailyRanking;
+}
+
+/**
+ * Slack投稿用にランキング部分を整形する
  *
  * @param {array} 'Daily Report'シートの値（2次元配列）
  *   【Dimensions】ga:pageTitle, ga:pagePath
@@ -90,7 +134,7 @@ var createAnalyticsReport = function(rowValues) {
  *   【※Order】-ga:pageviews
  * @return {string} 記事別PVランキング
  */
-var createDailyRanking = function(values) {
+var joinRankingMessage = function(values) {
   var ranking = [];
 
   const HEADER_ROW = 15;
@@ -186,8 +230,8 @@ var checkBlogFeed = function(checkTarget) {
   var ret = {};
   var comparisonTitle = '';
   for (var iTarget = 0; iTarget < blogFeeds.length; iTarget++) {
-
     comparisonTitle = blogFeeds[iTarget].title;
+
     if (checkTarget.indexOf(comparisonTitle) !== -1) {
       ret = comparisonTitle;
       break;
