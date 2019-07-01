@@ -9,11 +9,11 @@ var ErrorLog = function (errorObject, time) {
 
   var functionNameStart = stack.lastIndexOf('(') + 1;
   var functionNameEnd   = stack.length - 2;
-  this.function         = stack.slice(functionNameStart, functionNameEnd);
+  this.funciton = stack.slice(functionNameStart, functionNameEnd);
 
   var fileNameStart = stack.indexOf(' ') + 1;
   var fileNameEnd   = stack.indexOf(':');
-  this.scriptFile   = stack.slice(fileNameStart, fileNameEnd);
+  this.scriptFile = stack.slice(fileNameStart, fileNameEnd);
 
   this.line        = errorObject.lineNumber;
   this.type        = errorObject.name;
@@ -24,7 +24,7 @@ ErrorLog.prototype.output = function(spreadsheet, sheetName) {
   var logs = [
     this.time,
     this.scriptFile,
-    this.function,
+    this.funciton,
     this.line,
     this.type,
     this.description
