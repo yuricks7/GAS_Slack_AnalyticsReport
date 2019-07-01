@@ -23,7 +23,7 @@ Column.prototype = {
   setWidth : function() {
     this.sheet.setColumnWidths(this.number, this.counts, this.width);
   },
-  
+
   setNumFormat : function() {
     const FIRST_ROW = 1;
     var   rowCounts = this.sheet.getLastRow();
@@ -31,7 +31,7 @@ Column.prototype = {
       this.sheet.getRange(FIRST_ROW, this.number, rowCounts, this.counts)
                 .setNumberFormat(this.numFormat);
     }
-    
+
   }
 };
 
@@ -40,26 +40,26 @@ Column.prototype.setGradation = function() {
     Logger.log("setGradationメソッドの引数に'asd'か'dsd'を指定してください。")
     return;
   }
-  
+
   var tempSheet = this.sheet;
-  
+
   var colorOrders = setColorOrders(this.order);
-  
+
   const FIRST_ROW = 1;
   var   rowCounts = tempSheet.getLastRow();
   var   range     = tempSheet.getRange(FIRST_ROW, this.number, rowCounts, this.counts);
-  
+
   var rule = SpreadsheetApp.newConditionalFormatRule()
     .setGradientMaxpoint(colorOrders[0])
     .setGradientMinpoint(colorOrders[2])
     .setRanges([range])
     .build();
-    
+
   var rules = tempSheet.getConditionalFormatRules();
   rules.push(rule);
-  
+
   tempSheet.setConditionalFormatRules(rules);
-  
+
   return range;
 }
 
@@ -73,13 +73,13 @@ var setColorOrders = function(tempOrder) {
     colors.push(RED);
     colors.push(PINK);
     colors.push(WHITE);
-    
+
   } else if (tempOrder === 'dsd') {
     colors.push(WHITE);
     colors.push(PINK);
     colors.push(RED);
   }
-  
+
   return colors;
 };
 
@@ -93,7 +93,7 @@ Column.prototype.setWhite = function(criteria) {
     Logger.log("setWhiteメソッドの第2引数に'asd'か'dsd'を指定してください。")
     return;
   }
-  
+
   var tempSheet   = this.sheet;
   const FIRST_ROW = 1;
   var   rowCounts = tempSheet.getLastRow();
@@ -113,6 +113,6 @@ Column.prototype.setWhite = function(criteria) {
   var rules = tempSheet.getConditionalFormatRules();
   rules.push(rule);
   tempSheet.setConditionalFormatRules(rules);
-  
+
   return range;
 };

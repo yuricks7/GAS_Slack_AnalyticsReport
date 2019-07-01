@@ -1,4 +1,4 @@
-function SendAnalyticsReportToSlack() {
+function SendDailyReportToSlack() {
   try {
     const POST_CHANNEL_NAME   = '50_blog_yuru-wota';
     const DISPLAYED_USER_NAME = 'アクセス解析レポート';
@@ -89,25 +89,12 @@ var createReportMessage = function(rowValues) {
   reportMsg += 'Pageviews/Session     : ' + reports.pagesPerSessions   + ' pages/session' + '\n';
   reportMsg += 'Session Duration(Avg.): ' + reports.avgSessionDuration + ' sec.'          + '\n';
   reportMsg += 'Users                 : ' + reports.newUsers // ※改行しない
-                              + ' of ' + reports.allUsers           + ' people'        + '\n';
+                                 + ' of ' + reports.allUsers           + ' people'        + '\n';
   reportMsg += 'BounceRate            : ' + reports.bounceRate         + ' %'             + '\n';
   reportMsg += '```';
 
   return reportMsg;
 }
-
-/* --------------↓メモ↓-------------- */
-// 余裕が出来たら、レポート↑を桁揃えしたい…
-//var showSpace = function() {
-//  var num = 1;
-//  Logger.log('【\u0020%s】', num);
-//  Logger.log('【%s\u0020】', num);
-//
-//  num = String(1);
-//  Logger.log('【\u0020%s】', num);
-//  Logger.log('【%s\u0020】', num);
-//}
-/* --------------↑メモ↑-------------- */
 
 /**
  * 前日のデータからランキングを生成する
