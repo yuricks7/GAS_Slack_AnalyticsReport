@@ -1,47 +1,80 @@
+/**
+ * 全記事ランキングを他のシートに転記する
+ */
+function ExportAllArticlesRanking() {
+  try {
+    // 実行時間の計測スタート
+    var exportTimer = new Timer;
+    var start       = exportTimer.start();
+
+    // 実際の処理
+    var processResults = {};
+    processResults = exportRanking();
+
+    // 実行時間の記入
+    var logSheet = processResults.spreadsheet.getSheetByName('Import Log');
+    var logRow   = logSheet.getLastRow() + 1;
+    logSheet.getRange(logRow, 1).setValue(processResults.sheetName);
+    logSheet.getRange(logRow, 2).setValue(Moment.moment(start).format('YYYY/MM/DD HH:mm:ss.SSS'));
+
+    var end = exportTimer.finish();
+    logSheet.getRange(logRow, 3).setValue(Moment.moment(end).format('YYYY/MM/DD HH:mm:ss.SSS'));
+
+    var time = end - start;
+    Logger.log(time);
+    logSheet.getRange(logRow, 4).setValue('=$C' + logRow + '-$B' +logRow);
+
+  } catch (e) {
+    var occuredTime = new Date();
+    var errorLog    = new ErrorLog(e, occuredTime);
+    var ss          = SpreadsheetApp.getActiveSpreadsheet();
+    errorLog.output(ss, 'エラーログ');
+
+  }
+}
+
 /* ------------------- ▼メイン▼ ------------------- */
-function ExportComprehensiveRanking() {
-  // 実行時間計測
-  var exportTimer = new Timer;
-  var start       = exportTimer.start();
-  
-  // 処理
-  var   exportSS         = SpreadsheetApp.openById('1Ap5xrT2KS6SyvvYFF7JcEWMOsci9gjbOE6X__SvJSDg');
+/**
+ * ダウンロードされたランキングデータを別のシートに転記する
+ *
+ * @return {object} 転記先のスプレッドシート
+ */
+var exportRanking = function() {
+  var scriptProps         = PropertiesService
+                            .getScriptProperties().getProperties();
+  const DESTINATION_SS_ID = scriptProps.EXPORT_SS_ID;
+
+  var   destinationSS    = SpreadsheetApp.openById(DESTINATION_SS_ID);
   const CONFIG_SHEET_COL = 4;
 
   var rawDataSS    = SpreadsheetApp.getActiveSpreadsheet();
   var newSheetName = getDataDateMoment(rawDataSS, CONFIG_SHEET_COL);
-  
-  deleteSheetNameDuplicated(newSheetName, exportSS);
 
-  var sheetCounts = exportSS.getNumSheets();
+  deleteSheetNameDuplicated(newSheetName, destinationSS);
+
+  var sheetCounts = destinationSS.getNumSheets();
   Logger.log('シート：全 ' + sheetCounts + ' 枚');
 
-  var exportSheet  = exportSS.insertSheet(newSheetName, sheetCounts);
+  var exportSheet  = destinationSS.insertSheet(newSheetName, sheetCounts);
   var exportValues = setOutputValues(rawDataSS);
 
-  exportToNewSheet(exportSS, exportSheet, exportValues);
+  exportToNewSheet(destinationSS, exportSheet, exportValues);
 
-  // 実行時間計測
-  var logSheet = exportSS.getSheetByName('Import Log');
-  var logRow   = logSheet.getLastRow() + 1;
-  logSheet.getRange(logRow, 1).setValue(newSheetName);
-  logSheet.getRange(logRow, 2).setValue(Moment.moment(start).format('YYYY/MM/DD hh:mm:ss.SSS'));
+  var rets = {
+    spreadsheet: destinationSS,
+    sheetName: newSheetName,
+  };
 
-  var end = exportTimer.finish();
-  logSheet.getRange(logRow, 3).setValue(Moment.moment(end).format('YYYY/MM/DD hh:mm:ss.SSS'));
-
-  var time = end - start;
-  Logger.log(time);
-  logSheet.getRange(logRow, 4).setValue('=$C' + logRow + '-$B' +logRow);
+  return rets;
 }
 /* ------------------- ▲メイン▲ ------------------- */
 
 /**
  * データの日付をMomentオブジェクト形式で取得
- * 
+ *
  * @param {object} 'ReportConfiguration'シートのあるSpreadsheet
  * @param {num} 'ReportConfiguration'シートの列番号
- * @return {object} Momentオブジェクト形式のデータの日付 
+ * @return {object} Momentオブジェクト形式のデータの日付
  */
 var getDataDateMoment = function(rawDataSS, targetCol) {
   var configSheet     = rawDataSS.getSheetByName('Report Configuration');
@@ -50,13 +83,13 @@ var getDataDateMoment = function(rawDataSS, targetCol) {
 
   var dataDate   = configValues[4][targetCol - 1];
   var momentDate = Moment.moment(dataDate).format('YYYYMMDD');
-  
+
   return momentDate;
 };
 
 /**
  * エクスポート先の確認
- * 
+ *
  * @param {string} 作成予定のシート名
  * @param {object} シートを作成予定のSpreadsheet
  */
@@ -75,28 +108,28 @@ var deleteSheetNameDuplicated = function(sheetName, ss) {
  *
  * @return {array} エクスポートする値の二次元配列
  */
-var setOutputValues = function(rawDataSS) {  
+var setOutputValues = function(rawDataSS) {
   // レポートを取得
   var rawDataSheet = rawDataSS.getSheetByName('Comp. Ranking');
   var rawdataRange = rawDataSheet.getDataRange();
   var rawValues    = rawdataRange.getValues();
-  //  Logger.log(rawValues);  
-  
+  //  Logger.log(rawValues);
+
   var outputValues = []; // 初期化
-  
+
   const FIRST_ROW    = 15; // 見出しからスタート
   var rawDataLastRow = rawdataRange.getLastRow();
-  
+
   // 生データの行数分繰り返し
   for (var rRawData = FIRST_ROW - 1; rRawData < rawDataLastRow; rRawData++) {
     // 1次元配列化
     var rowValues = pushRowValues(rawValues[rRawData], rRawData);
     // Logger.log('\n' + outputRowValues);
-    
+
     // 2次元配列化
     outputValues.push(rowValues);
   }
-  
+
   //  Logger.log(outputValues);
   return outputValues;
 }
@@ -110,15 +143,15 @@ var setOutputValues = function(rawDataSS) {
  */
 var pushRowValues = function(inputRowValues, rRawData) {
   var currentOutputRow = [];
-  
+
   // 順位
   var rank = rRawData - 14;
-  if (rank === 0) {  
+  if (rank === 0) {
     currentOutputRow.push('Rank');
   } else {
     currentOutputRow.push(rank);
   }
-  
+
   // ページ種別
   var categories = selectCategory(inputRowValues[0]);
   for (var count = 0; count < categories.length; count++) {
@@ -129,26 +162,26 @@ var pushRowValues = function(inputRowValues, rRawData) {
   const DELETE_STRING = ' - ゆるオタクのすすめ';
   var currentTitle    = inputRowValues[0];
   if (currentTitle.indexOf(DELETE_STRING) !== -1 ) {
-    currentTitle = currentTitle.replace(DELETE_STRING, '');    
+    currentTitle = currentTitle.replace(DELETE_STRING, '');
   }
-  
+
   currentOutputRow.push(currentTitle);
-  
+
   // URLを編集
-  const ADDITIONAL_URL = 'https://yuru-wota.hateblo.jp';
+  const ADDITIONAL_URL = 'https://www.yuru-wota.com';
   var currentUrl = inputRowValues[1];
   if (currentUrl !== 'Page') {
     currentUrl = ADDITIONAL_URL + currentUrl;
   }
-  
+
   currentOutputRow.push(currentUrl);
-  
+
   // 以下、各数値を入力
   for (var iInput = 2; iInput <= 9; iInput++) {
     currentOutputRow.push(inputRowValues[iInput]);
     currentOutputRow.push(getPreviousDayRatio(inputRowValues[iInput]));
   }
-  
+
 //  Logger.log(currentOutputRow);
   return currentOutputRow;
 }
@@ -175,7 +208,7 @@ var selectCategory = function(pageTitle) {
     [04,     'Archive', 04,     'Daily',         '日間ーの記事一覧'],
     [05,     'Report',  01,     'DataStuio',     '/reporting/']
   ];
-  
+
   const C_CATEGORY = 4;
   var iCategory = searchCategoryIndex(pageTitle, pageCategories, C_CATEGORY);
 
@@ -195,23 +228,23 @@ var selectCategory = function(pageTitle) {
  */
 var searchCategoryIndex = function(pageTitle, pageCategories, cSearchCol) {
   var index = 0;
-  
+
   switch (pageTitle) {
     // 見出し行
     case (pageCategories[0][cSearchCol]):
       index = 0;
       break;
-      
+
     // TOPページ
     case (pageCategories[1][cSearchCol]):
       index = 1;
       break;
-    
+
     // 記事一覧
     case (pageCategories[2][cSearchCol]):
       index = 2;
       break;
-    
+
     // 各ナントカの記事一覧
     default:
       for (var rCategories = 4; rCategories < pageCategories.length; rCategories++) {
@@ -259,13 +292,13 @@ var exportToNewSheet = function(ss, sheet, exportValues) {
 
 
   targetRange.setValues(exportValues); //ここで値を入力
-  
+
   var columns = createColumnsCollection(sheet);
 //  Logger.log(columns);
 //  Logger.log(columns.array);
 
   // 書式設定
-  for (var iColumns = 0; iColumns < columns.length; iColumns++) {  
+  for (var iColumns = 0; iColumns < columns.length; iColumns++) {
     columns[iColumns].setNumFormat();
     columns[iColumns].setWidth();
     if (iColumns > 5) {
@@ -301,7 +334,7 @@ var createColumnsCollection = function(sheet) {
     [sheet,  18, 2, 100, 'asd', '#,##0.00 "pages "'],
     [sheet,  20, 2, 100, 'asd', '#,##0.00 "sec. "'],
     [sheet,  22, 2,  80, 'dsd', '0.00 % ']
-  ];  
+  ];
 
   var columns = generateColumns(settings);
 
@@ -316,12 +349,12 @@ var createColumnsCollection = function(sheet) {
  */
 var generateColumns = function(settings) {
   var columns = [];
-  
+
   for (var iSettings = 0; iSettings < settings.length; iSettings++) {
     var tempSettings = settings[iSettings];
     var tempSheet    = tempSettings[0];
     var colNum       = tempSettings[1];
-    
+
     var column = new Column(
      tempSheet,
      colNum,
@@ -330,22 +363,22 @@ var generateColumns = function(settings) {
      tempSettings[4],
      tempSettings[5]
      )
-    
+
     columns.push(column);
-  
-//    Logger.log(column.header);
+
+  //    Logger.log(column.header);
   }
 
   return columns;
 };
 
-var setHeaderFormat = function (sheet, lastCol) {
+var setHeaderFormat = function(sheet, lastCol) {
   var headerRange = sheet.getRange(1, 1, 1, lastCol);
   const DEEP_BLUE = '#20124d';
   const WHITE     = '#ffffff';
   headerRange.setBackground(DEEP_BLUE)
              .setFontColor(WHITE)
              .setFontWeight('Bold');
-  
+
   return sheet;
 };

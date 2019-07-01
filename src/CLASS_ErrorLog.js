@@ -21,6 +21,10 @@ var ErrorLog = function (errorObject, time) {
 };
 
 ErrorLog.prototype.output = function(spreadsheet, sheetName) {
+  if (!spreadsheet) {
+    spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  }
+
   var logs = [
     this.time,
     this.scriptFile,
