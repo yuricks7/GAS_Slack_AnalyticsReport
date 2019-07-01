@@ -1,10 +1,12 @@
 function SendAnalyticsReportToSlack() {
   try {
-    //Slackにポスト
     const POST_CHANNEL_NAME   = '50_blog_yuru-wota';
     const DISPLAYED_USER_NAME = 'アクセス解析レポート';
+    const text = generateMessageForSlack();
+
+    //Slackにポスト
     var mySlack = new Slack(POST_CHANNEL_NAME, DISPLAYED_USER_NAME);
-    mySlack.post(generateMessageForSlack());
+    mySlack.post(text);
 
   } catch (e) {
     var occuredTime = new Date();
