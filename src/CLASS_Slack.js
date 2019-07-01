@@ -19,7 +19,7 @@ Slack.prototype.post = function(message) {
   if (!message) {
     var message = '送信テストか空欄でーす';
   }
-  
+
   var accessToken = PropertiesService
     .getScriptProperties().getProperty('SLACK_ACCESS_TOKEN');
 
