@@ -11,7 +11,8 @@ function SendDailyReportToSlack() {
   } catch (e) {
     var occuredTime = new Date();
     var errorLog    = new ErrorLog(e, occuredTime);
-    errorLog.output(ss, 'エラーログ');
+    var ssForLog    = SpreadsheetApp.getActiveSpreadsheet();
+    errorLog.output(ssForLog, 'エラーログ');
 
   }
 }
@@ -164,7 +165,14 @@ var createTempRankMsg = function(rank, rowValues) {
       Logger.log(rowValues[iValue]);
     }
   }
+  
   var blogFeedObj = checkBlogFeed(rowValues[0]);
+  if (!blogFeedObj) {
+    blogFeedObj = {
+    title: '■■',
+    url  : '■■',
+    };
+  }
   var title       = blogFeedObj.title;
 
   // Slackで読みやすいように、値を加工しつつ代入
@@ -203,12 +211,12 @@ var createTempRankMsg = function(rank, rowValues) {
 var checkBlogFeed = function(checkTarget) {
   var yuru_wotaku_no_susume = {
     title: 'ゆるオタクのすすめ',
-    url: 'https://yuru-wota.hateblo.jp'
+    url  : 'https://yuru-wota.hateblo.jp'
   };
 
   var yuru_wota_note = {
     title: 'ゆるおたノート',
-    url: 'https://www.yuru-wota.com'
+    url  : 'https://www.yuru-wota.com'
   };
 
   var blogFeeds = [
