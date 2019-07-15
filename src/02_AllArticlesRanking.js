@@ -196,6 +196,7 @@ var selectCategory = function(pageTitle) {
   var pageCategories = [
     ['numT', 'Type',    'numC', 'Category',      'Page Title'], // 見出し行
     [01,     'TOP',     01,     'TOP',           'ゆるオタクのすすめ'],
+    [01,     'TOP',     01,     'TOP',           'ゆるおたノート'],
     [01,     'TOP',     02,     'Archives',      '記事一覧 - ゆるオタクのすすめ'],
     [02,     'Article', 01,     'Article',       '---'],        //残り
     [03,     'Error',   01,     'PageError',     'Not Found'],
@@ -226,34 +227,39 @@ var selectCategory = function(pageTitle) {
  * @param {num} ページ種別一覧の列インデックス
  * @return {num} 一致したページ種別の行インデックス
  */
-var searchCategoryIndex = function(pageTitle, pageCategories, cSearchCol) {
+var searchCategoryIndex = function(pageTitle, pageCategories, cSearch) {
   var index = 0;
 
   switch (pageTitle) {
-    // 見出し行
-    case (pageCategories[0][cSearchCol]):
+    // 転記先の見出し行
+    case (pageCategories[0][cSearch]):
       index = 0;
       break;
 
     // TOPページ
-    case (pageCategories[1][cSearchCol]):
+    case (pageCategories[1][cSearch]):
       index = 1;
       break;
 
-    // 記事一覧
-    case (pageCategories[2][cSearchCol]):
+    // TOPページ
+    case (pageCategories[2][cSearch]):
       index = 2;
       break;
 
-    // 各ナントカの記事一覧
+    // 記事一覧
+    case (pageCategories[3][cSearch]):
+      index = 3;
+      break;
+
+    // 各「～の記事一覧」
     default:
-      for (var rCategories = 4; rCategories < pageCategories.length; rCategories++) {
-        if (pageTitle.indexOf(pageCategories[rCategories][cSearchCol]) !== -1) {
+      for (var rCategories = 9; rCategories < pageCategories.length; rCategories++) {
+        if (pageTitle.indexOf(pageCategories[rCategories][cSearch]) !== -1) {
           index = rCategories;
           break;
         }
         // どれも当てはまらない場合
-        index = 3;
+        index = 4;
       }
   }
   return index;

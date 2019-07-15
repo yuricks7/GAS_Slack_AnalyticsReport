@@ -22,7 +22,7 @@ var ErrorLog = function (errorObject, time) {
 
 ErrorLog.prototype.output = function(spreadsheet, sheetName) {
   if (!spreadsheet) {
-    spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+    spreadsheet = SpreadsheetApp.openById('M2CH847EqOswj54bjFbE4aytdWIQOAUuY');
   }
 
   var logs = [
