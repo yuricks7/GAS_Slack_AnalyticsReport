@@ -209,6 +209,7 @@ var createTempRankMsg = function(rank, rowValues) {
  * @return {object} ブログのタイトルとURLのオブジェクト
  */
 var checkBlogFeed = function(checkTarget) {
+
   var yuru_wotaku_no_susume = {
     title: 'ゆるオタクのすすめ',
     url  : 'https://yuru-wota.hateblo.jp'

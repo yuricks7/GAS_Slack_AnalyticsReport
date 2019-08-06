@@ -20,8 +20,7 @@ Slack.prototype.post = function(message) {
     var message = '送信テストか空欄でーす';
   }
 
-  var accessToken = PropertiesService
-    .getScriptProperties().getProperty('SLACK_ACCESS_TOKEN');
+  var accessToken = PropertiesService.getScriptProperties().getProperty('SLACK_ACCESS_TOKEN');
 
  //SlackAppインスタンスの取得
   var slackApp = SlackApp.create(accessToken);
