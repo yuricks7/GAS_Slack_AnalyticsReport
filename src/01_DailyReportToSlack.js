@@ -32,7 +32,7 @@ var generateMessageForSlack = function() {
   var dailyRanking = generateDailyRanking(ss);
 
   // メッセージをまとめる
-  var message = ':male-construction-worker: < おはようございまーす。昨日の成績ですよー' + '\n';
+  var message = '< おはようございまーす。昨日の成績ですよー' + '\n';
   message += dailyReport + '\n'
   message += '\n'
   message += dailyRanking;
