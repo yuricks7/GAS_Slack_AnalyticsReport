@@ -1,3 +1,9 @@
+function test() {
+  SendDailyReportToSlack();
+  
+  ExportAllArticlesRanking();
+}
+
 function SendDailyReportToSlack() {
   try {
     const POST_CHANNEL_NAME   = '50_blog_yuru-wota';
@@ -219,10 +225,16 @@ var checkBlogFeed = function(checkTarget) {
     title: 'ゆるおたノート',
     url  : 'https://www.yuru-wota.com'
   };
+  
+  var monologue = {
+    title: 'ゆるオタクのつぶやき',
+    url  : 'https://monologue.yuru-wota.com'
+  }
 
   var blogFeeds = [
     yuru_wotaku_no_susume,
-    yuru_wota_note
+    yuru_wota_note,
+    monologue
   ];
 
   var ret = {};
