@@ -1,5 +1,9 @@
 /**
  * Slackクラス
+ * 
+ * 【参照】
+ * Slack API | Slack
+ * https://api.slack.com/
  */
 class Slack {
   /**
