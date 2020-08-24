@@ -1,7 +1,5 @@
 class spDataSheet {
- /**
-  * コンストラクタ
-  */
+
   constructor(sheetName) {
     // スプレッドシートからデータを取得する
     this.ss        = SpreadsheetApp.getActiveSpreadsheet();
@@ -10,15 +8,16 @@ class spDataSheet {
     const values   = this.dataRange.getValues();
     this.values    = values;
 
-    const ATTRIBUTE_COL = 1;
-    const runDate    = Moment.moment(values[1][ATTRIBUTE_COL]);
-    const dataDate   = runDate.subtract(1,'days');
+    const DATA_COL = 1;
+    const runDate     = Moment.moment(values[1][DATA_COL]);
+    const dataDate    = runDate.subtract(1,'days');
+    const DATE_FORMAT = 'YYYY/MM/DD';
     const attributes = {
-       runDate         :  runDate.format('YYYY/MM/DD'),
-      dataDate         : dataDate.format('YYYY/MM/DD'),
-      viewName         : values[2][ATTRIBUTE_COL],
-      total            : this.separate_(values[3][ATTRIBUTE_COL]),
-      isContainedSample: values[5][ATTRIBUTE_COL],
+       runDate         :  runDate.format(DATE_FORMAT),
+      dataDate         : dataDate.format(DATE_FORMAT),
+      viewName         : values[2][DATA_COL],
+      total            : this.separate_(values[3][DATA_COL]),
+      isContainedSample: values[5][DATA_COL],
     };
 
     this.data = {

@@ -1,7 +1,5 @@
 class DailyReport extends spDataSheet {
- /**
-  * コンストラクタ
-  */
+
   constructor() {
     // スプレッドシートからデータを取得する
     super('Daily Report'); // 親クラスのコンストラクタを引き継ぐ（=オーバーライド）

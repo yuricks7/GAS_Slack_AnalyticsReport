@@ -12,6 +12,7 @@
  * ```
  */
 class SlackEndPoint {
+
   /**
    * SlackEndPointクラスのインスタンスを生成する
    *

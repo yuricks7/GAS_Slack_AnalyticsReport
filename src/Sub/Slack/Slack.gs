@@ -6,9 +6,7 @@
  * https://api.slack.com/
  */
 class Slack {
-  /**
-   * コンストラクタ
-   */
+
   constructor() {
     // リクエストメソッド用のクラス
     const header    = {"Accept": "application/json"};
