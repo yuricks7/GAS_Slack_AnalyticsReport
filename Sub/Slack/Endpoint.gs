@@ -4,6 +4,12 @@
  * 【参照】
  * Slack API | Slack
  * https://api.slack.com/
+ * 
+ * 【使用例】
+ * ```
+ * const endPoint = new SlackEndPoint(path, query);
+ * this.apiOperator.GET(endPoint.url);
+ * ```
  */
 class SlackEndPoint {
   /**

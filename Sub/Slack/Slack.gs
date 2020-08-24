@@ -14,10 +14,6 @@ class Slack {
     const header    = {"Accept": "application/json"};
     this.apiOperator = RestApiHelper.Load(header);
 
-    // 【使用例】
-    // const endPoint = new SlackEndPoint(path, query);
-    // this.apiOperator.GET(endPoint.url);
-
     // 基本設定
     const props = PropertiesService.getScriptProperties();
     this.channelId = props.getProperty('channel_id');
@@ -31,17 +27,18 @@ class Slack {
   post(message) {
     if (!message) {let message = '送信テストか空欄でーす'};
 
-    const path = `chat.postMessage`;
+    const path = 'chat.postMessage';
     const query = [{
-        key: 'channel',
-        value: this.channelId,
     }]
 
     const endPoint = new SlackEndPoint(path, query);
-    const option   = { text: message };
+    const option   = {
+      text   : message,
+      channel: this.channelId,
+    };
     
     const json   = this.apiOperator.POST(endPoint.url, option);
+    console.log(json);
     return json;
-//    console.log(json);
   }
 }
