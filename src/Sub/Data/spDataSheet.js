@@ -68,7 +68,7 @@ class spDataSheet {
     const BOLD = '*';
 
     let m = '';
-    
+
     return m;
   }
 }
