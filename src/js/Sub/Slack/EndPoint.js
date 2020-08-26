@@ -1,10 +1,10 @@
 /**
  * SlackEndPointクラス
- * 
+ *
  * 【参照】
  * Slack API | Slack
  * https://api.slack.com/
- * 
+ *
  * 【使用例】
  * ```
  * const endPoint = new SlackEndPoint(path, query);
@@ -32,7 +32,7 @@ class SlackEndPoint {
     const props       = PropertiesService.getScriptProperties();
     this.apiToken     = props.getProperty('api_token');
     this.commonParams = `token=${this.apiToken}`;
-    
+
     this.url = this.generate(path, query);
   }
 

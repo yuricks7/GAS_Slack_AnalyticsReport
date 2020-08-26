@@ -11,7 +11,65 @@ class DailyRanking extends spDataSheet {
       this.data.ranks.push(this.getRankData_(values, rank));
     }
   }
-  
+
+  merge() {
+    const src = this.values;
+
+    let data = {
+      title: '',
+      url  : '',
+      pageviews          : {
+        amp  : 0,
+        other: 0,
+        total: 0,
+      },
+      avgTimeOnPage      : {
+        amp  : 0,
+        other: 0,
+        total: 0,
+      },
+      sessions           : {
+        amp  : 0,
+        other: 0,
+        total: 0,
+      },
+      pageviewsPerSession: {
+        amp  : 0,
+        other: 0,
+        total: 0,
+      },
+      newUsers           : {
+        amp  : 0,
+        other: 0,
+        total: 0,
+      },
+      users              : {
+        amp  : 0,
+        other: 0,
+        total: 0,
+      },
+      bounceRate         : {
+        amp  : 0,
+        other: 0,
+        total: 0,
+      },
+      avgSessionDuration : {
+        amp  : 0,
+        other: 0,
+        total: 0,
+      },
+    };
+
+    let rankValues = [];
+    for (let i = 0; src.length; i++) {
+      rankValues = src[i];
+      if (rankValues[1].indexOf('?amp=1') !== -1) {
+        
+      }
+
+    }
+  }
+
  /**
   * 記事1件分のデータを取得する
   */
@@ -21,7 +79,7 @@ class DailyRanking extends spDataSheet {
       ':one:', ':two:',   ':three:', ':four:', ':five:',
       ':six:', ':seven:', ':eight:', ':nine:', ':keycap_ten:'
     ];
-    
+
     const rankIndex  = rank - 1;
     const rankValues = values[15 + rankIndex];
 
@@ -29,7 +87,7 @@ class DailyRanking extends spDataSheet {
     const srcTitle     = rankValues[0];
     const blogFeed     = this.getFeed_(srcTitle);
     const articleTitle = srcTitle.replace(' - ' + blogFeed.title, '');
-    
+
     // 格納
     const results = {
       icon               : rankIcons[rankIndex],
@@ -44,7 +102,7 @@ class DailyRanking extends spDataSheet {
       bounceRate         : this.separate_(this.toPercentage_(rankValues[8])),
       avgSessionDuration : this.separate_(this.toSecondDecimalPlace_(rankValues[9])),
     };
-  
+
     return results;
   };
 
@@ -64,7 +122,7 @@ class DailyRanking extends spDataSheet {
       title: 'ゆるオタクのつぶやき',
       url  : 'https://monologue.yuru-wota.com'
     }];
-    
+
     // ※サイト名を変更した場合は、以下を調整の必要あり！
     let blogFeed = {};
     for (let i = 0; i < blogFeeds.length; i++) {
@@ -75,7 +133,7 @@ class DailyRanking extends spDataSheet {
 
     return blogFeed;
   };
-  
+
  /**
   * Slack投稿用のメッセージを作成する
   */
@@ -87,7 +145,7 @@ class DailyRanking extends spDataSheet {
     // ヘッダー
     let m = '';
     m += `${BOLD}▼全 ${this.data.attributes.total} 件 のアクセスがありました${BOLD}${LF}`;
-    
+
     // 1件ごとのデータ
     let data = {};
     const ranks = this.data.ranks;
@@ -96,7 +154,7 @@ class DailyRanking extends spDataSheet {
 
       m += `${data.icon}${data.title}${LF}`;
       m += `${data.url}${LF}`;
-      
+
       m += `${CODE_BLOCK}${LF}`;
       m += `${data.pageviews} pv, `;
       m += `(${data.avgTimeOnPage} sec./pv), `;
@@ -105,7 +163,7 @@ class DailyRanking extends spDataSheet {
       m += `${CODE_BLOCK}${LF}`;
       m += `${LF}`;
     }
-        
+
     return m;
   }
 }

@@ -7,8 +7,8 @@ const postSlack = () => {
 
   let m = '';
   m += analytics.toSlackMessage() + '\n';
-  m += rankings.toSlackMessage();
-  
+  m +=  rankings.toSlackMessage();
+
   const slack = new Slack();
   slack.post(m);
 };

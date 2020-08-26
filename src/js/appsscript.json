@@ -1,0 +1,16 @@
+{
+  "timeZone"    : "Asia/Tokyo",
+  "dependencies": {
+    "libraries": [{
+      "userSymbol": "Moment",
+      "libraryId" : "15hgNOjKHUG4UtyZl9clqBbl23sDvWMS8pfDJOyIapZk5RBqwL3i-rlCo",
+      "version"   : "9"
+    }, {
+      "userSymbol": "RestApiHelper",
+      "libraryId" : "1_TDv0sV9l82h85UPEQ5JQZNSUyRGGyBX3J5LWQl7PL7pSfvkfdIPgDHa",
+      "version"   : "16"
+    }]
+  },
+  "exceptionLogging": "STACKDRIVER",
+  "runtimeVersion"  : "V8"
+}
