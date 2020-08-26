@@ -8,10 +8,14 @@ class spDataSheet {
     const values   = this.dataRange.getValues();
     this.values    = values;
 
+    this.configSheet  = this.ss.getSheetByName('config');
+    this.configRange  = this.configSheet.getDataRange();
+    this.configValues = this.configRange.getValues();
+    const dataDate    = Moment.moment(this.configValues[3][2]);
+
     const DATA_COL = 1;
     const runDate     = Moment.moment(values[1][DATA_COL]);
-    const dataDate    = runDate.subtract(1,'days');
-    const DATE_FORMAT = 'YYYY/MM/DD';
+    const DATE_FORMAT = 'YYYY/MM/DD (ddd)';
     const attributes = {
        runDate         :  runDate.format(DATE_FORMAT),
       dataDate         : dataDate.format(DATE_FORMAT),
@@ -64,7 +68,7 @@ class spDataSheet {
     const BOLD = '*';
 
     let m = '';
-
+    
     return m;
   }
 }
