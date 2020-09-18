@@ -17,8 +17,10 @@ class DailyRankSheet extends spRankSheet {
   * 概要文を作成する
   */
   toShortDescription() {
-    const LF   = '\n';
-    const BOLD = '*';
+    const symbol = new SlackSymbol();
+    const LF   = symbol.lf;
+    const BOLD = symbol.bold;
+    const CODE_BLOCK = symbol.codeBlock;
     
     // 一部、生データを使用する
     const dailyReport = new DailyReport();
@@ -43,8 +45,8 @@ class DailyRankSheet extends spRankSheet {
     const au  = numFormat.toInteger(amount.users.subtotal);
     const br  = numFormat.separate(report.lastDay.bounceRate); // 暫定的に…
 
-    const CODE_BLOCK = '```';
-    m += `${CODE_BLOCK}${LF}`;
+//    const CODE_BLOCK = '```';
+    m += CODE_BLOCK;
     m += 'Pageviews             : ' + pv  + ' of '  + tpv + ' views' + LF;
     m += 'Time on Page(Avg.)    : ' + top + ' sec.'     + LF;
     m += 'Sessions              : ' + ss  + ' sessions' + LF;
@@ -52,7 +54,8 @@ class DailyRankSheet extends spRankSheet {
     m += 'Session Duration(Avg.): ' + sd  + ' sec.' + LF;
     m += 'Users                 : ' + nu  + ' of '  + au + ' people' + LF;
     m += 'BounceRate            : ' + br  + ' %(*)' + LF;
-    m += `${CODE_BLOCK}${LF}`;
+    m += CODE_BLOCK;
+    m += LF;
 
     return m;
   }
@@ -61,9 +64,10 @@ class DailyRankSheet extends spRankSheet {
   * ランキングを作成する
   */
   toRanking() {
-    const LF   = '\n';
-    const BOLD = '*';
-    const CODE_BLOCK = '```';
+    const symbol = new SlackSymbol();
+    const LF   = symbol.lf;
+    const BOLD = symbol.bold;
+    const CODE_BLOCK = symbol.codeBlock;
 
     // ヘッダー
     const total = this.data.TotalCounts;
@@ -95,7 +99,7 @@ class DailyRankSheet extends spRankSheet {
       const nu  = numFormat.toInteger(data.newUsers.subtotal);
       const au  = numFormat.toInteger(data.users.subtotal);
       
-      m += `${CODE_BLOCK}${LF}`;
+      m += CODE_BLOCK;
       m += pv  + ' pv'  + DELIMITER;
       m += top + ' sec./pv'    + DELIMITER;
       m += ss  + ' sess.'      + DELIMITER;
@@ -103,8 +107,8 @@ class DailyRankSheet extends spRankSheet {
       m += pps + ' pv/sess.'   + DELIMITER;
       m += br  + ' %'   + DELIMITER;
       m += nu  + ' of ' + au   + ' people' + LF;
-      m += `${CODE_BLOCK}${LF}`;
-      m += `${LF}`;
+      m += CODE_BLOCK;
+      m += LF;
     }
         
     return m;
