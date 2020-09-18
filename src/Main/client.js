@@ -17,13 +17,7 @@ const postSlack = () => {
  * Slackにメッセージを投稿する
  */
 const postSlack_new = () => {
-  const analytics = new DailyReport();
-  const rankings  = new spRankSheet('DR(sort)');
-
-  let m = '';
-  m += analytics.toSlackMessage() + '\n';
-  m +=  rankings.toSlackMessage();
-
   const slack = new Slack();
-  slack.post(m);
+  const dailySheet = new DailyRankSheet(5);
+  slack.post(dailySheet.toDailyReport());
 };

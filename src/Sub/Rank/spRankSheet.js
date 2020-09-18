@@ -1,6 +1,6 @@
 class spRankSheet {
 
-  constructor(sheetName) {
+  constructor(sheetName, topN, attrCols) {
     // スプレッドシートからデータを取得する
     this.ss        = SpreadsheetApp.getActiveSpreadsheet();
     this.srcSheet  = this.ss.getSheetByName(sheetName);
@@ -9,62 +9,22 @@ class spRankSheet {
 
     const values = this.values;
 
-    // 上位10件のデータを取得する
+    // 上位n件のデータを取得する
     this.data = {};
     this.data.ranks = [];
-    for (let rank = 1; rank <= 5; rank++) {
-      this.data.ranks.push(this.getRankData_(values, rank));
+    for (let rank = 1; rank <= topN; rank++) {
+      this.data.ranks.push(this.getRankData_(values, rank, attrCols));
     }
     
     const attributeValues = values[0];
-    this.dataCounts = attributeValues[2];
-    this.amount = this.getData_(attributeValues);
-  }
-
- /**
-  * 行データをオブジェクトに変換する
-  */
-  getData_(values) {
-    const dataProps = [
-      'attributes',
-      'pageviews',
-      'avgTimeOnPage',
-      'sessions',
-      'pageviewsPerSession',
-      'newUsers',
-      'users',
-      'bounceRate',
-      'avgSessionDuration',
-    ];
-
-    let data = {};
-    const UNDEFINED = '■■';
-    for (let n = 0; n < dataProps.length; n++) {
-      let prop = dataProps[n];
-      data[prop] = {};
-
-      if (prop === 'attributes') {
-        data[prop].rank  = values[0];
-        data[prop].blog  = values[2];
-        data[prop].path  = values[3];
-        data[prop].title = values[4];
-
-      } else {
-        const ATTRS_INDEX = 4 - 1;
-        let j = ATTRS_INDEX + 3 * n - 1;
-        data[prop].amp      = values[j + 0];
-        data[prop].others   = values[j + 1];
-        data[prop].subtotal = values[j + 2];
-      }
-    }
-  
-    return data;
+    this.data.TotalCounts = attributeValues[2];
+    this.amount           = this.getData_(attributeValues, attrCols);
   }
 
  /**
   * 記事1件分のデータを取得する
   */
-  getRankData_(values, rank) {
+  getRankData_(values, rank, attrCols) {
     // slack絵文字
     const rankIcons = [
       ':one:', ':two:',   ':three:', ':four:', ':five:',
@@ -72,8 +32,8 @@ class spRankSheet {
     ];
     
     const rankIndex  = rank - 1;
-    const TABKE_HEADERS = 4;
-    const rankValues = values[TABKE_HEADERS + rankIndex];
+    const TABLE_HEADERS = 4;
+    const rankValues = values[TABLE_HEADERS + rankIndex];
 
     let results = {};
     if (!Array.isArray(rankValues)) { // 空の時はそもそもインデックス0も無いので(!変数)だと判定できない模様。
@@ -142,7 +102,7 @@ class spRankSheet {
       const blogFeed = this.getFeed_(keyWord);
 
       // 格納
-      results = this.getData_(rankValues);
+      results = this.getData_(rankValues, attrCols);
       
       // 追加
       results.attributes = {
@@ -156,6 +116,75 @@ class spRankSheet {
     return results;
   };
 
+ /**
+  * 行データをオブジェクトに変換する
+  */
+  getData_(values, attrCols) {
+    const dataProps = [
+      'attributes',
+      'pageviews',
+      'avgTimeOnPage',
+      'sessions',
+      'pageviewsPerSession',
+      'newUsers',
+      'users',
+      'bounceRate',
+      'avgSessionDuration',
+    ];
+
+    let data = {};
+    const UNDEFINED = '■■';
+    for (let n = 0; n < dataProps.length; n++) {
+      let prop = dataProps[n];
+      data[prop] = {};
+
+//      const ATTRS_INDEX = attrCols - 1;
+//      let j = ATTRS_INDEX + 3 * n - 1;
+//      const subNumber = new SubNumber();
+//      switch (prop) {
+//        case 'attributes':
+//          data[prop].rank  = values[0];
+//          data[prop].blog  = values[2];
+//          data[prop].path  = values[3];
+//          data[prop].title = values[4];
+//
+//        case 'avgTimeOnPage':
+//        case 'pageviewsPerSession':
+//        case 'avgSessionDuration':
+//          const DECIMAL_POINT = 2;
+//          data[prop].amp      = subNumber.toDecimalPoints(values[j + 0], DECIMAL_POINT);
+//          data[prop].others   = subNumber.toDecimalPoints(values[j + 1], DECIMAL_POINT);
+//          data[prop].subtotal = subNumber.toDecimalPoints(values[j + 2], DECIMAL_POINT);
+//        
+//        case 'bounceRate':
+//          data[prop].amp      = subNumber.toPercentage(values[j + 0]);
+//          data[prop].others   = subNumber.toPercentage(values[j + 1]);
+//          data[prop].subtotal = subNumber.toPercentage(values[j + 2]);
+//
+//        default:
+//          data[prop].amp      = subNumber.toInteger(values[j + 0]);
+//          data[prop].others   = subNumber.toInteger(values[j + 1]);
+//          data[prop].subtotal = subNumber.toInteger(values[j + 2]);
+//     }
+        
+      if (prop === 'attributes') {
+        data[prop].rank  = values[0];
+        data[prop].blog  = values[2];
+        data[prop].path  = values[3];
+        data[prop].title = values[4];
+
+      } else {
+        const ATTRS_INDEX = attrCols - 1;
+        let j = ATTRS_INDEX + 3 * n - 1;
+        data[prop].amp      = values[j + 0];
+        data[prop].others   = values[j + 1];
+        data[prop].subtotal = values[j + 2];
+      }
+    }
+  
+    return data;
+  }
+  
  /**
   * アナリティクスで取得した記事タイトルからフィードのデータを取得する
   *
@@ -186,61 +215,12 @@ class spRankSheet {
 
     return blogFeed;
   };
-  
+
  /**
   * Slack投稿用のメッセージを作成する
   */
   toSlackMessage() {
-    const LF   = '\n';
-    const BOLD = '*';
-    const CODE_BLOCK = '```';
 
-    // ヘッダー
-    const total = this.dataCounts;
-    const info = this.getTotalDescription_(total);
-
-    let m = '';
-    m += `${BOLD}▼${info}${BOLD}${LF}`;
-    
-    // 1件ごとのデータ
-    let data = {};
-    const ranks = this.data.ranks;
-    const DELIMITER = ' || ';
-    for (let i = 0; i < ranks.length; i ++) {
-      data = ranks[i];
-
-      m += `${data.attributes.icon}${data.attributes.title}${LF}`;
-      m += `${data.attributes.url}${LF}`;
-      
-      m += `${CODE_BLOCK}${LF}`;
-      m += this.separate_(data.pageviews.subtotal) + ' pv' + DELIMITER;
-      m += this.separate_(this.toSecondDecimalPlace_(data.avgTimeOnPage.subtotal)) + ' sec./pv' + DELIMITER;
-      m += this.separate_(data.sessions.subtotal) + ' sess.' + DELIMITER;
-      m += this.separate_(this.toSecondDecimalPlace_(data.avgSessionDuration.subtotal)) + ' sec./sess.' + DELIMITER;
-      m += this.separate_(this.toPercentage_(data.bounceRate.subtotal)) + ' %' + DELIMITER;
-      m += this.separate_(data.newUsers.subtotal) + ' of ' + data.users.subtotal + ' people' + LF;
-      m += `${CODE_BLOCK}${LF}`;
-      m += `${LF}`;
-    }
-        
-    return m;
-  }
-  
- /**
-  * アクセスがあった件数によってメッセージを変える
-  */
-  getTotalDescription_(total) {
-
-    let m = `全 ${total} 件 のアクセスがありました`;
-    if (total === 0) {
-      m = '残念ながら、昨日はアクセスがありませんでした…';
-
-    } else if (total < 5) {
-      m += '…';
-
-    }
-    
-    return m;
   }
 
  /**
@@ -249,6 +229,7 @@ class spRankSheet {
   * @return {Number} パーセンテージ（小数点第一位まで）
   */
   toPercentage_(num) {
+//    return SubNumber.toPercentage_(num);
     return Number(num * 100).toFixed(1);
   }
 
