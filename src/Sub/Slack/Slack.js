@@ -1,6 +1,6 @@
 /**
  * Slackクラス
- *
+ * 
  * 【参照】
  * Slack API | Slack
  * https://api.slack.com/
@@ -34,9 +34,9 @@ class Slack {
       text   : message,
       channel: this.channelId,
     };
-
+    
     const json   = this.apiOperator.POST(endPoint.url, option);
-    console.log(json);
+    console.log(json); // ログ取り用
     return json;
   }
 }
