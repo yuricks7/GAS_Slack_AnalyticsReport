@@ -28,11 +28,11 @@ class DailyRankSheet extends spRankSheet {
     m += `${BOLD}▼${report.attributes.dataDate}${BOLD}${LF}`;
 
     const amount    = this.amount;
-    const subNumber = new SubNumber();
+    const numFormat = new NumFormat();
     const DECIMAL_POINT = 2;
     const data   = {
 //      pv : amount.pageviews.subtotal,
-//      tpv: subNumber.toInteger(this.values[0][3]),
+//      tpv: numFormat.toInteger(this.values[0][3]),
 //      top: amount.avgTimeOnPage.subtotal,
 //      ss : amount.sessions.subtotal,
 //      pps: amount.pageviewsPerSession.subtotal,
@@ -41,15 +41,15 @@ class DailyRankSheet extends spRankSheet {
 //      us : amount.users.subtotal,
 //      br : report.lastDay.bounceRate, // 暫定的に…
 
-      pv : subNumber.toInteger(amount.pageviews.subtotal),
-      tpv: subNumber.toInteger(this.separate_(this.values[0][3])),
-      top: subNumber.toDecimalPoints(amount.avgTimeOnPage.subtotal, DECIMAL_POINT),
-      ss : subNumber.toInteger(amount.sessions.subtotal),
-      pps: subNumber.toDecimalPoints(amount.pageviewsPerSession.subtotal, DECIMAL_POINT),
-      sd : subNumber.toDecimalPoints(amount.avgSessionDuration.subtotal,  DECIMAL_POINT),
-      nu : subNumber.toInteger(amount.newUsers.subtotal),
-      us : subNumber.toInteger(amount.users.subtotal),
-      br : subNumber.separate(report.lastDay.bounceRate), // 暫定的に…
+      pv : numFormat.toInteger(amount.pageviews.subtotal),
+      tpv: numFormat.toInteger(this.separate_(this.values[0][3])),
+      top: numFormat.toDecimalPoints(amount.avgTimeOnPage.subtotal, DECIMAL_POINT),
+      ss : numFormat.toInteger(amount.sessions.subtotal),
+      pps: numFormat.toDecimalPoints(amount.pageviewsPerSession.subtotal, DECIMAL_POINT),
+      sd : numFormat.toDecimalPoints(amount.avgSessionDuration.subtotal,  DECIMAL_POINT),
+      nu : numFormat.toInteger(amount.newUsers.subtotal),
+      us : numFormat.toInteger(amount.users.subtotal),
+      br : numFormat.separate(report.lastDay.bounceRate), // 暫定的に…
     }
     
     const CODE_BLOCK = '```';
@@ -92,16 +92,16 @@ class DailyRankSheet extends spRankSheet {
       m += `${attr.icon}${attr.title}${LF}`;
       m += `${attr.url}${LF}`;
       
-      const subNumber = new SubNumber();
+      const numFormat = new NumFormat();
       const DECIMAL_POINT = 2;
       m += `${CODE_BLOCK}${LF}`;
-      m += subNumber.toInteger(data.pageviews.subtotal) + ' pv' + DELIMITER;
-      m += subNumber.toDecimalPoints(data.avgTimeOnPage.subtotal, DECIMAL_POINT) + ' sec./pv' + DELIMITER;
-      m += subNumber.toInteger(data.sessions.subtotal) + ' sess.' + DELIMITER;
-      m += subNumber.toDecimalPoints(data.avgSessionDuration.subtotal, DECIMAL_POINT) + ' sec./sess.' + DELIMITER;
-      m += subNumber.toDecimalPoints(data.pageviewsPerSession.subtotal, DECIMAL_POINT) + ' pv/sess.' + DELIMITER;
-      m += subNumber.toPercentage(data.bounceRate.subtotal) + ' %' + DELIMITER;
-      m += subNumber.toInteger(data.newUsers.subtotal) + ' of ' + subNumber.toInteger(data.users.subtotal) + ' people' + LF;
+      m += numFormat.toInteger(data.pageviews.subtotal) + ' pv' + DELIMITER;
+      m += numFormat.toDecimalPoints(data.avgTimeOnPage.subtotal, DECIMAL_POINT) + ' sec./pv' + DELIMITER;
+      m += numFormat.toInteger(data.sessions.subtotal) + ' sess.' + DELIMITER;
+      m += numFormat.toDecimalPoints(data.avgSessionDuration.subtotal, DECIMAL_POINT) + ' sec./sess.' + DELIMITER;
+      m += numFormat.toDecimalPoints(data.pageviewsPerSession.subtotal, DECIMAL_POINT) + ' pv/sess.' + DELIMITER;
+      m += numFormat.toPercentage(data.bounceRate.subtotal) + ' %' + DELIMITER;
+      m += numFormat.toInteger(data.newUsers.subtotal) + ' of ' + numFormat.toInteger(data.users.subtotal) + ' people' + LF;
       m += `${CODE_BLOCK}${LF}`;
       m += `${LF}`;
     }

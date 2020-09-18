@@ -1,4 +1,4 @@
-class SubNumber {
+class NumFormat {
 
   constructor() {
 
