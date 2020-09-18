@@ -96,6 +96,7 @@ class DailyRankSheet extends spRankSheet {
       m += this.separate_(this.toSecondDecimalPlace_(data.avgTimeOnPage.subtotal)) + ' sec./pv' + DELIMITER;
       m += this.separate_(data.sessions.subtotal) + ' sess.' + DELIMITER;
       m += this.separate_(this.toSecondDecimalPlace_(data.avgSessionDuration.subtotal)) + ' sec./sess.' + DELIMITER;
+      m += this.separate_(this.toSecondDecimalPlace_(data.pageviewsPerSession.subtotal)) + ' pv/sess.' + DELIMITER;
       m += this.separate_(this.toPercentage_(data.bounceRate.subtotal)) + ' %' + DELIMITER;
       m += this.separate_(data.newUsers.subtotal) + ' of ' + data.users.subtotal + ' people' + LF;
       m += `${CODE_BLOCK}${LF}`;

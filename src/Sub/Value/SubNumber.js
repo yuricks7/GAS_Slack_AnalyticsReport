@@ -24,8 +24,6 @@ class SubNumber {
   * @return {Number} 変換後の数値（3桁区切り、小数点第二位まで）
   */
   toDecimalPoints(num, decimalPoints) {
-    console.log(Number(num).toFixed(decimalPoints));
-    console.log(this.separate(Number(num).toFixed(decimalPoints)));
     return this.separate(Number(num).toFixed(decimalPoints));
   }
 
