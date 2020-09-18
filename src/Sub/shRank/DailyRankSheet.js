@@ -45,7 +45,6 @@ class DailyRankSheet extends spRankSheet {
     const au  = numFormat.toInteger(amount.users.subtotal);
     const br  = numFormat.separate(report.lastDay.bounceRate); // 暫定的に…
 
-//    const CODE_BLOCK = '```';
     m += CODE_BLOCK;
     m += 'Pageviews             : ' + pv  + ' of '  + tpv + ' views' + LF;
     m += 'Time on Page(Avg.)    : ' + top + ' sec.'     + LF;
