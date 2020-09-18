@@ -88,17 +88,20 @@ class DailyRankSheet extends spRankSheet {
     for (let i = 0; i < ranks.length; i ++) {
       data = ranks[i];
 
-      m += `${data.attributes.icon}${data.attributes.title}${LF}`;
-      m += `${data.attributes.url}${LF}`;
+      const attr = data.attributes;
+      m += `${attr.icon}${attr.title}${LF}`;
+      m += `${attr.url}${LF}`;
       
+      const subNumber = new SubNumber();
+      const DECIMAL_POINT = 2;
       m += `${CODE_BLOCK}${LF}`;
-      m += this.separate_(data.pageviews.subtotal) + ' pv' + DELIMITER;
-      m += this.separate_(this.toSecondDecimalPlace_(data.avgTimeOnPage.subtotal)) + ' sec./pv' + DELIMITER;
-      m += this.separate_(data.sessions.subtotal) + ' sess.' + DELIMITER;
-      m += this.separate_(this.toSecondDecimalPlace_(data.avgSessionDuration.subtotal)) + ' sec./sess.' + DELIMITER;
-      m += this.separate_(this.toSecondDecimalPlace_(data.pageviewsPerSession.subtotal)) + ' pv/sess.' + DELIMITER;
-      m += this.separate_(this.toPercentage_(data.bounceRate.subtotal)) + ' %' + DELIMITER;
-      m += this.separate_(data.newUsers.subtotal) + ' of ' + data.users.subtotal + ' people' + LF;
+      m += subNumber.toInteger(data.pageviews.subtotal) + ' pv' + DELIMITER;
+      m += subNumber.toDecimalPoints(data.avgTimeOnPage.subtotal, DECIMAL_POINT) + ' sec./pv' + DELIMITER;
+      m += subNumber.toInteger(data.sessions.subtotal) + ' sess.' + DELIMITER;
+      m += subNumber.toDecimalPoints(data.avgSessionDuration.subtotal, DECIMAL_POINT) + ' sec./sess.' + DELIMITER;
+      m += subNumber.toDecimalPoints(data.pageviewsPerSession.subtotal, DECIMAL_POINT) + ' pv/sess.' + DELIMITER;
+      m += subNumber.toPercentage(data.bounceRate.subtotal) + ' %' + DELIMITER;
+      m += subNumber.toInteger(data.newUsers.subtotal) + ' of ' + subNumber.toInteger(data.users.subtotal) + ' people' + LF;
       m += `${CODE_BLOCK}${LF}`;
       m += `${LF}`;
     }
