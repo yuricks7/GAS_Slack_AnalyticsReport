@@ -20,47 +20,38 @@ class DailyRankSheet extends spRankSheet {
     const LF   = '\n';
     const BOLD = '*';
     
+    // 一部、生データを使用する
     const dailyReport = new DailyReport();
-    const report = dailyReport.data;
+    const report      = dailyReport.data;
 
+    // メッセージの作成
     let m = '';
     m += `< おはようございまーす。昨日の成績ですよー${LF}`;
     m += `${BOLD}▼${report.attributes.dataDate}${BOLD}${LF}`;
 
-    const amount    = this.amount;
-    const numFormat = new NumFormat();
+    const numFormat     = new NumFormat();
     const DECIMAL_POINT = 2;
-    const data   = {
-//      pv : amount.pageviews.subtotal,
-//      tpv: numFormat.toInteger(this.values[0][3]),
-//      top: amount.avgTimeOnPage.subtotal,
-//      ss : amount.sessions.subtotal,
-//      pps: amount.pageviewsPerSession.subtotal,
-//      sd : amount.avgSessionDuration.subtotal,
-//      nu : amount.newUsers.subtotal,
-//      us : amount.users.subtotal,
-//      br : report.lastDay.bounceRate, // 暫定的に…
+    const amount = this.amount;
 
-      pv : numFormat.toInteger(amount.pageviews.subtotal),
-      tpv: numFormat.toInteger(this.separate_(this.values[0][3])),
-      top: numFormat.toDecimalPoints(amount.avgTimeOnPage.subtotal, DECIMAL_POINT),
-      ss : numFormat.toInteger(amount.sessions.subtotal),
-      pps: numFormat.toDecimalPoints(amount.pageviewsPerSession.subtotal, DECIMAL_POINT),
-      sd : numFormat.toDecimalPoints(amount.avgSessionDuration.subtotal,  DECIMAL_POINT),
-      nu : numFormat.toInteger(amount.newUsers.subtotal),
-      us : numFormat.toInteger(amount.users.subtotal),
-      br : numFormat.separate(report.lastDay.bounceRate), // 暫定的に…
-    }
-    
+    const pv  = numFormat.toInteger(amount.pageviews.subtotal);
+    const tpv = numFormat.toInteger(this.values[0][3]);
+    const top = numFormat.toDecimalPoints(amount.avgTimeOnPage.subtotal, DECIMAL_POINT);
+    const ss  = numFormat.toInteger(amount.sessions.subtotal);
+    const pps = numFormat.toDecimalPoints(amount.pageviewsPerSession.subtotal, DECIMAL_POINT);
+    const sd  = numFormat.toDecimalPoints(amount.avgSessionDuration.subtotal,  DECIMAL_POINT);
+    const nu  = numFormat.toInteger(amount.newUsers.subtotal);
+    const au  = numFormat.toInteger(amount.users.subtotal);
+    const br  = numFormat.separate(report.lastDay.bounceRate); // 暫定的に…
+
     const CODE_BLOCK = '```';
     m += `${CODE_BLOCK}${LF}`;
-    m += 'Pageviews             : ' + data.pv  + ' of '  + data.tpv + ' views' + LF;
-    m += 'Time on Page(Avg.)    : ' + data.top + ' sec.' + LF;
-    m += 'Sessions              : ' + data.ss  + ' sessions'      + LF;
-    m += 'Pageviews/Session     : ' + data.pps + ' pages/session' + LF;
-    m += 'Session Duration(Avg.): ' + data.sd  + ' sec.' + LF;
-    m += 'Users                 : ' + data.nu  + ' of '  + data.us + ' people' + LF;
-    m += 'BounceRate            : ' + data.br  + ' %(*)' + LF;
+    m += 'Pageviews             : ' + pv  + ' of '  + tpv + ' views' + LF;
+    m += 'Time on Page(Avg.)    : ' + top + ' sec.'     + LF;
+    m += 'Sessions              : ' + ss  + ' sessions' + LF;
+    m += 'Pageviews/Session     : ' + pps + ' pages/session' + LF;
+    m += 'Session Duration(Avg.): ' + sd  + ' sec.' + LF;
+    m += 'Users                 : ' + nu  + ' of '  + au + ' people' + LF;
+    m += 'BounceRate            : ' + br  + ' %(*)' + LF;
     m += `${CODE_BLOCK}${LF}`;
 
     return m;
@@ -83,6 +74,7 @@ class DailyRankSheet extends spRankSheet {
     
     // 1件ごとのデータ
     let data = {};
+    let nums = {};
     const ranks = this.data.ranks;
     const DELIMITER = ' || ';
     for (let i = 0; i < ranks.length; i ++) {
@@ -92,16 +84,25 @@ class DailyRankSheet extends spRankSheet {
       m += `${attr.icon}${attr.title}${LF}`;
       m += `${attr.url}${LF}`;
       
-      const numFormat = new NumFormat();
+      const numFormat     = new NumFormat();
       const DECIMAL_POINT = 2;
+      const pv  = numFormat.toInteger(data.pageviews.subtotal);
+      const top = numFormat.toDecimalPoints(data.avgTimeOnPage.subtotal, DECIMAL_POINT);
+      const ss  = numFormat.toInteger(data.sessions.subtotal);
+      const sd  = numFormat.toDecimalPoints(data.avgSessionDuration.subtotal, DECIMAL_POINT);
+      const pps = numFormat.toDecimalPoints(data.pageviewsPerSession.subtotal, DECIMAL_POINT);
+      const br  = numFormat.toPercentage(data.bounceRate.subtotal);
+      const nu  = numFormat.toInteger(data.newUsers.subtotal);
+      const au  = numFormat.toInteger(data.users.subtotal);
+      
       m += `${CODE_BLOCK}${LF}`;
-      m += numFormat.toInteger(data.pageviews.subtotal) + ' pv' + DELIMITER;
-      m += numFormat.toDecimalPoints(data.avgTimeOnPage.subtotal, DECIMAL_POINT) + ' sec./pv' + DELIMITER;
-      m += numFormat.toInteger(data.sessions.subtotal) + ' sess.' + DELIMITER;
-      m += numFormat.toDecimalPoints(data.avgSessionDuration.subtotal, DECIMAL_POINT) + ' sec./sess.' + DELIMITER;
-      m += numFormat.toDecimalPoints(data.pageviewsPerSession.subtotal, DECIMAL_POINT) + ' pv/sess.' + DELIMITER;
-      m += numFormat.toPercentage(data.bounceRate.subtotal) + ' %' + DELIMITER;
-      m += numFormat.toInteger(data.newUsers.subtotal) + ' of ' + numFormat.toInteger(data.users.subtotal) + ' people' + LF;
+      m += pv  + ' pv'  + DELIMITER;
+      m += top + ' sec./pv'    + DELIMITER;
+      m += ss  + ' sess.'      + DELIMITER;
+      m += sd  + ' sec./sess.' + DELIMITER;
+      m += pps + ' pv/sess.'   + DELIMITER;
+      m += br  + ' %'   + DELIMITER;
+      m += nu  + ' of ' + au   + ' people' + LF;
       m += `${CODE_BLOCK}${LF}`;
       m += `${LF}`;
     }
