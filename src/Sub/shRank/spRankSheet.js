@@ -32,8 +32,8 @@ class spRankSheet {
     ];
 
     const rankIndex  = rank - 1;
-    const TABLE_HEADERS = 4;
-    const rankValues = values[TABLE_HEADERS + rankIndex];
+    const headerRows = 4;
+    const rankValues = values[headerRows + rankIndex];
 
     let results = {};
     if (!Array.isArray(rankValues)) { // 空の時はそもそもインデックス0も無いので(!変数)だと判定できない模様。
@@ -120,7 +120,7 @@ class spRankSheet {
   * 行データをオブジェクトに変換する
   */
   getData_(values, attrCols) {
-    const dataProps = [
+    const propNames = [
       'attributes',
       'pageviews',
       'avgTimeOnPage',
@@ -134,8 +134,8 @@ class spRankSheet {
 
     let data = {};
     const UNDEFINED = '■■';
-    for (let n = 0; n < dataProps.length; n++) {
-      let prop = dataProps[n];
+    for (let n = 0; n < propNames.length; n++) {
+      let prop = propNames[n];
       data[prop] = {};
 
 //      const ATTRS_INDEX = attrCols - 1;
@@ -181,10 +181,10 @@ class spRankSheet {
         data[prop].subtotal = values[j + 2];
       }
     }
-  
+
     return data;
   }
-  
+
  /**
   * アナリティクスで取得した記事タイトルからフィードのデータを取得する
   *
@@ -204,7 +204,7 @@ class spRankSheet {
       title: 'ゆるオタクのつぶやき',
       url  : 'https://monologue.yuru-wota.com'
     }];
-    
+
     // ※サイト名を変更した場合は、以下を調整の必要あり！
     let blogFeed = {};
     for (let i = 0; i < blogFeeds.length; i++) {
@@ -223,36 +223,36 @@ class spRankSheet {
 
   }
 
- /**
-  * パーセンテージ用の数値に変換
-  *
-  * @return {Number} パーセンテージ（小数点第一位まで）
-  */
-  toPercentage_(num) {
-//    return SubNumber.toPercentage_(num);
-    return Number(num * 100).toFixed(1);
-  }
+//  /**
+//   * パーセンテージ用の数値に変換
+//   *
+//   * @return {Number} パーセンテージ（小数点第一位まで）
+//   */
+//   toPercentage_(num) {
+// //    return SubNumber.toPercentage_(num);
+//     return Number(num * 100).toFixed(1);
+//   }
 
- /**
-  * 小数点第二位までに変換
-  *
-  * @return {Number} 変換後の数値
-  */
-  toSecondDecimalPlace_(num) {
-    return Number(num).toFixed(2);
-  }
+//  /**
+//   * 小数点第二位までに変換
+//   *
+//   * @return {Number} 変換後の数値
+//   */
+//   toSecondDecimalPlace_(num) {
+//     return Number(num).toFixed(2);
+//   }
 
- /**
-  * 数値をカンマ区切りに変換
-  *
-  * 【参考】
-  * 数値をカンマ区切りにする - Qiita
-  * https://qiita.com/zawascript/items/922b5db574ef2b126069
-  *
-  * @return {String} 3桁ごとにカンマで区切った文字列
-  */
-  separate_(num){
-    return String(num).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');
-  }
+//  /**
+//   * 数値をカンマ区切りに変換
+//   *
+//   * 【参考】
+//   * 数値をカンマ区切りにする - Qiita
+//   * https://qiita.com/zawascript/items/922b5db574ef2b126069
+//   *
+//   * @return {String} 3桁ごとにカンマで区切った文字列
+//   */
+//   separate_(num){
+//     return String(num).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');
+//   }
 
 }

@@ -2,8 +2,14 @@
 
 src/gs/
 
+# ファイルごと除外
+
+
+
 # 拡張子ごと除外
 
 *.gsheet
 *.gscript
 *.gs
+
+*.json

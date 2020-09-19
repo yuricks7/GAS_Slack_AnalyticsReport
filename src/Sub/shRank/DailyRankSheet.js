@@ -31,16 +31,16 @@ class DailyRankSheet extends spRankSheet {
     m += `< おはようございまーす。昨日の成績ですよー${lf}`;
     m += `${bold}▼${report.attributes.dataDate}${bold}${lf}`;
 
-    const numFormat     = new NumFormat();
-    const DECIMAL_POINT = 2;
+    const numFormat    = new NumFormat();
+    const decimalPoint = 2;
     const amount = this.amount;
 
     const pv  = numFormat.toInteger(amount.pageviews.subtotal);
     const tpv = numFormat.toInteger(this.values[0][3]);
-    const top = numFormat.toDecimalPoints(amount.avgTimeOnPage.subtotal, DECIMAL_POINT);
+    const top = numFormat.toDecimalPoints(amount.avgTimeOnPage.subtotal, decimalPoint);
     const ss  = numFormat.toInteger(amount.sessions.subtotal);
-    const pps = numFormat.toDecimalPoints(amount.pageviewsPerSession.subtotal, DECIMAL_POINT);
-    const sd  = numFormat.toDecimalPoints(amount.avgSessionDuration.subtotal,  DECIMAL_POINT);
+    const pps = numFormat.toDecimalPoints(amount.pageviewsPerSession.subtotal, decimalPoint);
+    const sd  = numFormat.toDecimalPoints(amount.avgSessionDuration.subtotal,  decimalPoint);
     const nu  = numFormat.toInteger(amount.newUsers.subtotal);
     const au  = numFormat.toInteger(amount.users.subtotal);
     const br  = numFormat.separate(report.lastDay.bounceRate); // 暫定的に…
@@ -83,16 +83,16 @@ class DailyRankSheet extends spRankSheet {
       rank = ranks[i];
 
       const attr = rank.attributes;
-      m += `${attr.icon}${attr.title}${LF}`;
-      m += `${attr.url}${LF}`;
+      m += `${attr.icon}${attr.title}${lf}`;
+      m += `${attr.url}${lf}`;
 
-      const numFormat     = new NumFormat();
-      const DECIMAL_POINT = 2;
+      const numFormat    = new NumFormat();
+      const decimalPoint = 2;
       const pv  = numFormat.toInteger(rank.pageviews.subtotal);
-      const top = numFormat.toDecimalPoints(rank.avgTimeOnPage.subtotal, DECIMAL_POINT);
+      const top = numFormat.toDecimalPoints(rank.avgTimeOnPage.subtotal, decimalPoint);
       const ss  = numFormat.toInteger(rank.sessions.subtotal);
-      const sd  = numFormat.toDecimalPoints(rank.avgSessionDuration.subtotal, DECIMAL_POINT);
-      const pps = numFormat.toDecimalPoints(rank.pageviewsPerSession.subtotal, DECIMAL_POINT);
+      const sd  = numFormat.toDecimalPoints(rank.avgSessionDuration.subtotal, decimalPoint);
+      const pps = numFormat.toDecimalPoints(rank.pageviewsPerSession.subtotal, decimalPoint);
       const br  = numFormat.toPercentage(rank.bounceRate.subtotal);
       const nu  = numFormat.toInteger(rank.newUsers.subtotal);
       const au  = numFormat.toInteger(rank.users.subtotal);
@@ -104,9 +104,9 @@ class DailyRankSheet extends spRankSheet {
       m += sd  + ' sec./sess.' + delimiter;
       m += pps + ' pv/sess.'   + delimiter;
       m += br  + ' %'   + delimiter;
-      m += nu  + ' of ' + au   + ' people' + LF;
+      m += nu  + ' of ' + au   + ' people' + lf;
       m += codeBlock;
-      m += LF;
+      m += lf;
     }
 
     return m;
@@ -116,7 +116,6 @@ class DailyRankSheet extends spRankSheet {
   * アクセスがあった件数によってメッセージを変える
   */
   getTotalDescription_(total) {
-
     let m = `全 ${total} 件 のアクセスがありました`;
     if (total === 0) {
       m = '残念ながら、昨日はアクセスがありませんでした…';
