@@ -25,76 +25,27 @@ class spRankSheet {
   * 記事1件分のデータを取得する
   */
   getRankData_(values, rank, attrCols) {
-    // slack絵文字
-    const rankIcons = [
-      ':one:', ':two:',   ':three:', ':four:', ':five:',
-      ':six:', ':seven:', ':eight:', ':nine:', ':keycap_ten:'
-    ];
+    const symbol = new SlackSymbol();
+    const rankIcons = symbol.rankIcons;
+    const error     = symbol.error;
 
     const rankIndex  = rank - 1;
     const headerRows = 4;
     const rankValues = values[headerRows + rankIndex];
 
     let results = {};
-    if (!Array.isArray(rankValues)) { // 空の時はそもそもインデックス0も無いので(!変数)だと判定できない模様。
-      const UNDEFINED = '■■';
-
+    if (!rankValues[3]) { // 空の時はそもそもインデックス0も無いので`(!変数)`では判定できない模様。
       // 格納
+      results = this.inputAllError_(error);
+
+      // 追加
       results = {
         attributes: {
           icon : rankIcons[rankIndex],
-          title: UNDEFINED + ' - ' + UNDEFINED + UNDEFINED + UNDEFINED,
-          url  : UNDEFINED + UNDEFINED + UNDEFINED + UNDEFINED + UNDEFINED,
-        },
-
-        pageviews: {
-          amp   : UNDEFINED,
-          others: UNDEFINED,
-          total : UNDEFINED,
-        },
-
-        avgTimeOnPage: {
-          amp   : UNDEFINED,
-          others: UNDEFINED,
-          wAvg  : UNDEFINED,
-        },
-
-        sessions: {
-          amp   : UNDEFINED,
-          others: UNDEFINED,
-          total : UNDEFINED,
-        },
-
-        pageviewsPerSession: {
-          amp   : UNDEFINED,
-          others: UNDEFINED,
-          wAvg  : UNDEFINED,
-        },
-
-        newUsers: {
-          amp   : UNDEFINED,
-          others: UNDEFINED,
-          total : UNDEFINED,
-        },
-
-        users: {
-          amp   : UNDEFINED,
-          others: UNDEFINED,
-          total : UNDEFINED,
-        },
-
-        bounceRate: {
-          amp   : UNDEFINED,
-          others: UNDEFINED,
-          wAvg  : UNDEFINED,
-        },
-
-        avgSessionDuration: {
-          amp   : UNDEFINED,
-          others: UNDEFINED,
-          wAvg  : UNDEFINED,
-        },
-      };
+          title: `${error} - ${error}${error}${error}`,
+          url  : `${error}${error}${error}${error}${error}`,
+        }
+      }
 
     } else {
       // アナリティクスのデータから、レポート用に文字列を変換
@@ -115,6 +66,43 @@ class spRankSheet {
 
     return results;
   };
+
+  inputAllError_(error) {
+    // オブジェクトのプロパティを準備
+    const propNames = [
+      'attributes',
+      'pageviews',
+      'avgTimeOnPage',
+      'sessions',
+      'pageviewsPerSession',
+      'newUsers',
+      'users',
+      'bounceRate',
+      'avgSessionDuration',
+    ];
+
+    const valNames = [
+      'amp',
+      'others',
+      'subtotal'
+    ];
+
+    // 格納
+    let data = {};
+    for (let n = 0; n < propNames.length; n++) {
+      let prop = propNames[n];
+      data[prop] = {};
+
+      for (let j = 0; j < valNames.length; j++) {
+        data[prop][valNames[j]] = error; // 代入できてないらしい…
+
+      console.log(data[prop][valNames[j]]);
+
+      }
+    }
+
+    return data;
+  }
 
  /**
   * 行データをオブジェクトに変換する

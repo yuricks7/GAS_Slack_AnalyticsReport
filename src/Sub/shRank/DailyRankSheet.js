@@ -88,6 +88,9 @@ class DailyRankSheet extends spRankSheet {
 
       const numFormat    = new NumFormat();
       const decimalPoint = 2;
+
+   console.log(rank.pageviews);
+
       const pv  = numFormat.toInteger(rank.pageviews.subtotal);
       const top = numFormat.toDecimalPoints(rank.avgTimeOnPage.subtotal, decimalPoint);
       const ss  = numFormat.toInteger(rank.sessions.subtotal);

@@ -9,5 +9,12 @@ class SlackSymbol {
     this.myDelimiter = ' || ';
 
     this.quote = '>';
+
+    this.error = '■■';
+    this.rankIcons = [
+      ':one:', ':two:',   ':three:', ':four:', ':five:',
+      ':six:', ':seven:', ':eight:', ':nine:', ':keycap_ten:'
+    ];
+
   }
 }
