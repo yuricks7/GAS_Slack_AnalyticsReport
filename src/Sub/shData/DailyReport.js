@@ -16,7 +16,7 @@ class DailyReport extends spDataSheet {
       bounceRate         : this.separate_(this.toPercentage_(totalValues[7])),
       avgSessionDuration : this.separate_(this.toSecondDecimalPlace_(totalValues[8])),
     };
-    
+
     const lastDayValues = values[15];
     this.data.lastDay = {
       pageviews          : this.separate_(lastDayValues[1]),
@@ -40,7 +40,7 @@ class DailyReport extends spDataSheet {
     let m = '';
     m += `< おはようございまーす。昨日の成績ですよー${LF}`;
     m += `${BOLD}▼${this.data.attributes.dataDate}${BOLD}${LF}`;
-    
+
     const lastDay = this.data.lastDay;
     const total   = this.data.total;
     const CODE_BLOCK = '```';
@@ -53,7 +53,7 @@ class DailyReport extends spDataSheet {
     m += `Users                 : ${lastDay.newUsers} of ${lastDay.users} people${LF}`;
     m += `BounceRate            : ${lastDay.bounceRate} %${LF}`;
     m += `${CODE_BLOCK}${LF}`;
-    
+
     return m;
   }
 }

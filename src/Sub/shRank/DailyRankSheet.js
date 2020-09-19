@@ -2,34 +2,34 @@ class DailyRankSheet extends spRankSheet {
 
   constructor(topN) {
     super('DR(sort)', topN, 4);
-    
+
   }
 
   toDailyReport() {
     let m = '';
     m += this.toShortDescription() + '\n';
     m += this.toRanking();
-    
+
     return m;
   }
-  
+
  /**
   * 概要文を作成する
   */
   toShortDescription() {
     const symbol = new SlackSymbol();
-    const LF   = symbol.lf;
-    const BOLD = symbol.bold;
-    const CODE_BLOCK = symbol.codeBlock;
-    
+    const lf   = symbol.lf;
+    const bold = symbol.bold;
+    const codeBlock = symbol.codeBlock;
+
     // 一部、生データを使用する
     const dailyReport = new DailyReport();
     const report      = dailyReport.data;
 
     // メッセージの作成
     let m = '';
-    m += `< おはようございまーす。昨日の成績ですよー${LF}`;
-    m += `${BOLD}▼${report.attributes.dataDate}${BOLD}${LF}`;
+    m += `< おはようございまーす。昨日の成績ですよー${lf}`;
+    m += `${bold}▼${report.attributes.dataDate}${bold}${lf}`;
 
     const numFormat     = new NumFormat();
     const DECIMAL_POINT = 2;
@@ -45,71 +45,70 @@ class DailyRankSheet extends spRankSheet {
     const au  = numFormat.toInteger(amount.users.subtotal);
     const br  = numFormat.separate(report.lastDay.bounceRate); // 暫定的に…
 
-    m += CODE_BLOCK;
-    m += 'Pageviews             : ' + pv  + ' of '  + tpv + ' views' + LF;
-    m += 'Time on Page(Avg.)    : ' + top + ' sec.'     + LF;
-    m += 'Sessions              : ' + ss  + ' sessions' + LF;
-    m += 'Pageviews/Session     : ' + pps + ' pages/session' + LF;
-    m += 'Session Duration(Avg.): ' + sd  + ' sec.' + LF;
-    m += 'Users                 : ' + nu  + ' of '  + au + ' people' + LF;
-    m += 'BounceRate            : ' + br  + ' %(*)' + LF;
-    m += CODE_BLOCK;
-    m += LF;
+    m += codeBlock;
+    m += 'Pageviews             : ' + pv  + ' of '  + tpv + ' views' + lf;
+    m += 'Time on Page(Avg.)    : ' + top + ' sec.'     + lf;
+    m += 'Sessions              : ' + ss  + ' sessions' + lf;
+    m += 'Pageviews/Session     : ' + pps + ' pages/session' + lf;
+    m += 'Session Duration(Avg.): ' + sd  + ' sec.' + lf;
+    m += 'Users                 : ' + nu  + ' of '  + au + ' people' + lf;
+    m += 'BounceRate            : ' + br  + ' %(*)' + lf;
+    m += codeBlock;
+    m += lf;
 
     return m;
   }
-  
+
  /**
   * ランキングを作成する
   */
   toRanking() {
     const symbol = new SlackSymbol();
-    const LF   = symbol.lf;
-    const BOLD = symbol.bold;
-    const CODE_BLOCK = symbol.codeBlock;
+    const lf   = symbol.lf;
+    const bold = symbol.bold;
+    const codeBlock = symbol.codeBlock;
 
     // ヘッダー
     const total = this.data.TotalCounts;
     const info = this.getTotalDescription_(total);
 
     let m = '';
-    m += `${BOLD}▼${info}${BOLD}${LF}`;
-    
-    // 1件ごとのデータ
-    let data = {};
-    let nums = {};
-    const ranks = this.data.ranks;
-    const DELIMITER = ' || ';
-    for (let i = 0; i < ranks.length; i ++) {
-      data = ranks[i];
+    m += `${bold}▼${info}${bold}${lf}`;
 
-      const attr = data.attributes;
+    // 1件ごとのデータ
+    let rank = {};
+    const ranks     = this.data.ranks;
+    const delimiter = symbol.myDelimiter;
+    for (let i = 0; i < ranks.length; i ++) {
+      rank = ranks[i];
+
+      const attr = rank.attributes;
       m += `${attr.icon}${attr.title}${LF}`;
       m += `${attr.url}${LF}`;
-      
+
       const numFormat     = new NumFormat();
       const DECIMAL_POINT = 2;
-      const pv  = numFormat.toInteger(data.pageviews.subtotal);
-      const top = numFormat.toDecimalPoints(data.avgTimeOnPage.subtotal, DECIMAL_POINT);
-      const ss  = numFormat.toInteger(data.sessions.subtotal);
-      const sd  = numFormat.toDecimalPoints(data.avgSessionDuration.subtotal, DECIMAL_POINT);
-      const pps = numFormat.toDecimalPoints(data.pageviewsPerSession.subtotal, DECIMAL_POINT);
-      const br  = numFormat.toPercentage(data.bounceRate.subtotal);
-      const nu  = numFormat.toInteger(data.newUsers.subtotal);
-      const au  = numFormat.toInteger(data.users.subtotal);
-      
-      m += CODE_BLOCK;
-      m += pv  + ' pv'  + DELIMITER;
-      m += top + ' sec./pv'    + DELIMITER;
-      m += ss  + ' sess.'      + DELIMITER;
-      m += sd  + ' sec./sess.' + DELIMITER;
-      m += pps + ' pv/sess.'   + DELIMITER;
-      m += br  + ' %'   + DELIMITER;
+      const pv  = numFormat.toInteger(rank.pageviews.subtotal);
+      const top = numFormat.toDecimalPoints(rank.avgTimeOnPage.subtotal, DECIMAL_POINT);
+      const ss  = numFormat.toInteger(rank.sessions.subtotal);
+      const sd  = numFormat.toDecimalPoints(rank.avgSessionDuration.subtotal, DECIMAL_POINT);
+      const pps = numFormat.toDecimalPoints(rank.pageviewsPerSession.subtotal, DECIMAL_POINT);
+      const br  = numFormat.toPercentage(rank.bounceRate.subtotal);
+      const nu  = numFormat.toInteger(rank.newUsers.subtotal);
+      const au  = numFormat.toInteger(rank.users.subtotal);
+
+      m += codeBlock;
+      m += pv  + ' pv'  + delimiter;
+      m += top + ' sec./pv'    + delimiter;
+      m += ss  + ' sess.'      + delimiter;
+      m += sd  + ' sec./sess.' + delimiter;
+      m += pps + ' pv/sess.'   + delimiter;
+      m += br  + ' %'   + delimiter;
       m += nu  + ' of ' + au   + ' people' + LF;
-      m += CODE_BLOCK;
+      m += codeBlock;
       m += LF;
     }
-        
+
     return m;
   }
 
@@ -126,7 +125,7 @@ class DailyRankSheet extends spRankSheet {
       m += '…';
 
     }
-    
+
     return m;
   }
 }

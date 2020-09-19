@@ -15,7 +15,7 @@ class spRankSheet {
     for (let rank = 1; rank <= topN; rank++) {
       this.data.ranks.push(this.getRankData_(values, rank, attrCols));
     }
-    
+
     const attributeValues = values[0];
     this.data.TotalCounts = attributeValues[2];
     this.amount           = this.getData_(attributeValues, attrCols);
@@ -30,7 +30,7 @@ class spRankSheet {
       ':one:', ':two:',   ':three:', ':four:', ':five:',
       ':six:', ':seven:', ':eight:', ':nine:', ':keycap_ten:'
     ];
-    
+
     const rankIndex  = rank - 1;
     const TABLE_HEADERS = 4;
     const rankValues = values[TABLE_HEADERS + rankIndex];
@@ -103,7 +103,7 @@ class spRankSheet {
 
       // 格納
       results = this.getData_(rankValues, attrCols);
-      
+
       // 追加
       results.attributes = {
         icon : rankIcons[rankIndex],
@@ -155,7 +155,7 @@ class spRankSheet {
 //          data[prop].amp      = subNumber.toDecimalPoints(values[j + 0], DECIMAL_POINT);
 //          data[prop].others   = subNumber.toDecimalPoints(values[j + 1], DECIMAL_POINT);
 //          data[prop].subtotal = subNumber.toDecimalPoints(values[j + 2], DECIMAL_POINT);
-//        
+//
 //        case 'bounceRate':
 //          data[prop].amp      = subNumber.toPercentage(values[j + 0]);
 //          data[prop].others   = subNumber.toPercentage(values[j + 1]);
@@ -166,7 +166,7 @@ class spRankSheet {
 //          data[prop].others   = subNumber.toInteger(values[j + 1]);
 //          data[prop].subtotal = subNumber.toInteger(values[j + 2]);
 //     }
-        
+
       if (prop === 'attributes') {
         data[prop].rank  = values[0];
         data[prop].blog  = values[2];
