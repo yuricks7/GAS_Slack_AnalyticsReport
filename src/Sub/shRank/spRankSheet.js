@@ -133,11 +133,11 @@ class spRankSheet {
     ];
 
     let data = {};
-    const UNDEFINED = '■■';
     for (let n = 0; n < propNames.length; n++) {
       let prop = propNames[n];
       data[prop] = {};
 
+// ここでまとめて数値を編集したい
 //      const ATTRS_INDEX = attrCols - 1;
 //      let j = ATTRS_INDEX + 3 * n - 1;
 //      const subNumber = new SubNumber();
@@ -222,37 +222,4 @@ class spRankSheet {
   toSlackMessage() {
 
   }
-
-//  /**
-//   * パーセンテージ用の数値に変換
-//   *
-//   * @return {Number} パーセンテージ（小数点第一位まで）
-//   */
-//   toPercentage_(num) {
-// //    return SubNumber.toPercentage_(num);
-//     return Number(num * 100).toFixed(1);
-//   }
-
-//  /**
-//   * 小数点第二位までに変換
-//   *
-//   * @return {Number} 変換後の数値
-//   */
-//   toSecondDecimalPlace_(num) {
-//     return Number(num).toFixed(2);
-//   }
-
-//  /**
-//   * 数値をカンマ区切りに変換
-//   *
-//   * 【参考】
-//   * 数値をカンマ区切りにする - Qiita
-//   * https://qiita.com/zawascript/items/922b5db574ef2b126069
-//   *
-//   * @return {String} 3桁ごとにカンマで区切った文字列
-//   */
-//   separate_(num){
-//     return String(num).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');
-//   }
-
 }

@@ -31,31 +31,4 @@ class DailyReport extends spDataSheet {
       avgSessionDuration : numFormat.toDecimalPoints(prevValues[8], decimalPoint),
     };
   }
-
-//  /**
-//   * Slack投稿用のメッセージを作成する
-//   */
-//   toSlackMessage() {
-//     const LF   = '\n';
-//     const BOLD = '*';
-
-//     let m = '';
-//     m += `< おはようございまーす。昨日の成績ですよー${LF}`;
-//     m += `${BOLD}▼${this.data.attributes.dataDate}${BOLD}${LF}`;
-
-//     const lastDay = this.data.lastDay;
-//     const total   = this.data.total;
-//     const CODE_BLOCK = '```';
-//     m += `${CODE_BLOCK}${LF}`;
-//     m += `Pageviews             : ${lastDay.pageviews} of ${total.pageviews} views${LF}`;
-//     m += `Time on Page(Avg.)    : ${lastDay.avgTimeOnPage} sec.${LF}`;
-//     m += `Sessions              : ${lastDay.sessions} sessions ${LF}`;
-//     m += `Pageviews/Session     : ${lastDay.pageviewsPerSession} pages/session${LF}`;
-//     m += `Session Duration(Avg.): ${lastDay.avgSessionDuration} sec.${LF}`;
-//     m += `Users                 : ${lastDay.newUsers} of ${lastDay.users} people${LF}`;
-//     m += `BounceRate            : ${lastDay.bounceRate} %${LF}`;
-//     m += `${CODE_BLOCK}${LF}`;
-
-//     return m;
-//   }
 }
