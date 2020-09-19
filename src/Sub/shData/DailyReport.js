@@ -3,57 +3,59 @@ class DailyReport extends spDataSheet {
   constructor() {
     // スプレッドシートからデータを取得する
     super('Daily Report'); // 親クラスのコンストラクタを引き継ぐ（=オーバーライド）
-    const values = this.dataRange.getValues();
+    const values    = this.dataRange.getValues();
+    const numFormat = new NumFormat();
+    const decimalPoint = 2;
 
-    const totalValues = values[11];
+    const amounts = values[11];
     this.data.total = {
-      pageviews          : this.separate_(totalValues[1]),
-      avgTimeOnPage      : this.separate_(this.toSecondDecimalPlace_(totalValues[2])),
-      sessions           : this.separate_(totalValues[3]),
-      pageviewsPerSession: this.separate_(this.toSecondDecimalPlace_(totalValues[4])),
-      newUsers           : this.separate_(totalValues[5]),
-      users              : this.separate_(totalValues[6]),
-      bounceRate         : this.separate_(this.toPercentage_(totalValues[7])),
-      avgSessionDuration : this.separate_(this.toSecondDecimalPlace_(totalValues[8])),
+      pageviews          : numFormat.toInteger(amounts[1]),
+      avgTimeOnPage      : numFormat.toDecimalPoints(amounts[2], decimalPoint),
+      sessions           : numFormat.toInteger(amounts[3]),
+      pageviewsPerSession: numFormat.toDecimalPoints(amounts[4], decimalPoint),
+      newUsers           : numFormat.toInteger(amounts[5]),
+      users              : numFormat.toInteger(amounts[6]),
+      bounceRate         : numFormat.toPercentage(amounts[7]),
+      avgSessionDuration : numFormat.toDecimalPoints(amounts[8], decimalPoint),
     };
 
-    const lastDayValues = values[15];
+    const prevValues = values[15];
     this.data.lastDay = {
-      pageviews          : this.separate_(lastDayValues[1]),
-      avgTimeOnPage      : this.separate_(this.toSecondDecimalPlace_(lastDayValues[2])),
-      sessions           : this.separate_(lastDayValues[3]),
-      pageviewsPerSession: this.separate_(this.toSecondDecimalPlace_(lastDayValues[4])),
-      newUsers           : this.separate_(lastDayValues[5]),
-      users              : this.separate_(lastDayValues[6]),
-      bounceRate         : this.separate_(this.toPercentage_(lastDayValues[7])),
-      avgSessionDuration : this.separate_(this.toSecondDecimalPlace_(lastDayValues[8])),
+      pageviews          : numFormat.toInteger(prevValues[1]),
+      avgTimeOnPage      : numFormat.toDecimalPoints(prevValues[2], decimalPoint),
+      sessions           : numFormat.toInteger(prevValues[3]),
+      pageviewsPerSession: numFormat.toDecimalPoints(prevValues[4], decimalPoint),
+      newUsers           : numFormat.toInteger(prevValues[5]),
+      users              : numFormat.toInteger(prevValues[6]),
+      bounceRate         : numFormat.toPercentage(prevValues[7]),
+      avgSessionDuration : numFormat.toDecimalPoints(prevValues[8], decimalPoint),
     };
   }
 
- /**
-  * Slack投稿用のメッセージを作成する
-  */
-  toSlackMessage() {
-    const LF   = '\n';
-    const BOLD = '*';
+//  /**
+//   * Slack投稿用のメッセージを作成する
+//   */
+//   toSlackMessage() {
+//     const LF   = '\n';
+//     const BOLD = '*';
 
-    let m = '';
-    m += `< おはようございまーす。昨日の成績ですよー${LF}`;
-    m += `${BOLD}▼${this.data.attributes.dataDate}${BOLD}${LF}`;
+//     let m = '';
+//     m += `< おはようございまーす。昨日の成績ですよー${LF}`;
+//     m += `${BOLD}▼${this.data.attributes.dataDate}${BOLD}${LF}`;
 
-    const lastDay = this.data.lastDay;
-    const total   = this.data.total;
-    const CODE_BLOCK = '```';
-    m += `${CODE_BLOCK}${LF}`;
-    m += `Pageviews             : ${lastDay.pageviews} of ${total.pageviews} views${LF}`;
-    m += `Time on Page(Avg.)    : ${lastDay.avgTimeOnPage} sec.${LF}`;
-    m += `Sessions              : ${lastDay.sessions} sessions ${LF}`;
-    m += `Pageviews/Session     : ${lastDay.pageviewsPerSession} pages/session${LF}`;
-    m += `Session Duration(Avg.): ${lastDay.avgSessionDuration} sec.${LF}`;
-    m += `Users                 : ${lastDay.newUsers} of ${lastDay.users} people${LF}`;
-    m += `BounceRate            : ${lastDay.bounceRate} %${LF}`;
-    m += `${CODE_BLOCK}${LF}`;
+//     const lastDay = this.data.lastDay;
+//     const total   = this.data.total;
+//     const CODE_BLOCK = '```';
+//     m += `${CODE_BLOCK}${LF}`;
+//     m += `Pageviews             : ${lastDay.pageviews} of ${total.pageviews} views${LF}`;
+//     m += `Time on Page(Avg.)    : ${lastDay.avgTimeOnPage} sec.${LF}`;
+//     m += `Sessions              : ${lastDay.sessions} sessions ${LF}`;
+//     m += `Pageviews/Session     : ${lastDay.pageviewsPerSession} pages/session${LF}`;
+//     m += `Session Duration(Avg.): ${lastDay.avgSessionDuration} sec.${LF}`;
+//     m += `Users                 : ${lastDay.newUsers} of ${lastDay.users} people${LF}`;
+//     m += `BounceRate            : ${lastDay.bounceRate} %${LF}`;
+//     m += `${CODE_BLOCK}${LF}`;
 
-    return m;
-  }
+//     return m;
+//   }
 }
